@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://3xgstjejf5ia"]
+
+[ext_resource type="Script" path="res://Scripts/multicoin_block.gd" id="1_et3hm"]
+[ext_resource type="PackedScene" uid="uid://bpcsd2m6ree7n" path="res://Scenes/block.tscn" id="2_q50vi"]
+[ext_resource type="PackedScene" uid="uid://c6jdtypklm3oc" path="res://Scenes/coin.tscn" id="3_kax50"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dkyw5"]
+size = Vector2(12, 19)
+
+[node name="Multicoin Block" type="Area2D"]
+script = ExtResource("1_et3hm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 1.5)
+shape = SubResource("RectangleShape2D_dkyw5")
+
+[node name="Block" parent="." instance=ExtResource("2_q50vi")]
+contentScene = ExtResource("3_kax50")
+content_amount = 20

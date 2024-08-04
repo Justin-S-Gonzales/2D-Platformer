@@ -22,6 +22,8 @@ var facing_direction = 1
 @export var gravity = 2000.0
 @export var jump_gravity = 800
 
+var can_jump = true
+
 var current_gravity = gravity
 
 signal coin_collected
@@ -31,12 +33,16 @@ func _physics_process(delta):
 	var direction = Input.get_axis("move_left", "move_right")
 	
 	# Handle jump.
-	if Input.is_action_pressed(&"jump") and is_on_floor():
+	if Input.is_action_pressed(&"jump") and is_on_floor() && can_jump:
 		velocity.y = jump_velocity
 		is_jumping = true
 		current_gravity = jump_gravity
+		can_jump = false
 	elif is_on_floor():
 		is_jumping = false
+	
+	if is_on_floor() && !Input.is_action_pressed(&"jump"):
+		can_jump = true
 		
 	if !Input.is_action_pressed(&"jump"):
 		current_gravity = gravity
@@ -95,5 +101,23 @@ func _physics_process(delta):
 func _on_area_2d_area_entered(area):
 	if area is Coin:
 		var coin = area as Coin
-		coin.play_animation()
+		area.play_animation()
 		coin_collected.emit()
+		#
+	#if area is SingleCoinBlock:
+		#var block = area as SingleCoinBlock
+		#block.play_animation()
+		#if block.get_content_amount() > 0:
+			#coin_collected.emit()
+			#
+	#if area is MultiCoinBlock:
+		#var block = area as MultiCoinBlock
+		#block.play_animation()
+		#if block.get_content_amount() > 0:
+			#coin_collected.emit()
+
+func _on_area_2d_body_entered(body):
+	if body is Block: # && body.position.y < position.y
+		body.play_animation()
+		if body.get_content_amount() > 0:
+			coin_collected.emit()		
