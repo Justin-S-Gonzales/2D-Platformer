@@ -348,12 +348,3 @@ position = Vector2(15, -110.5)
 shape = SubResource("RectangleShape2D_wa63o")
 
 [connection signal="coin_collected" from="Player" to="." method="_on_player_coin_collected"]
-[connection signal="body_entered" from="ForegroundTileMap/Coin" to="ForegroundTileMap/Coin" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMap/@Area2D@28976" to="ForegroundTileMap/@Area2D@28976" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMap/@Area2D@28977" to="ForegroundTileMap/@Area2D@28977" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMap/@Area2D@28978" to="ForegroundTileMap/@Area2D@28978" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMap/@Area2D@28979" to="ForegroundTileMap/@Area2D@28979" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMap/@Area2D@28980" to="ForegroundTileMap/@Area2D@28980" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMap/@Area2D@28982" to="ForegroundTileMap/@Area2D@28982" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMap/@Area2D@28983" to="ForegroundTileMap/@Area2D@28983" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMap/@Area2D@28984" to="ForegroundTileMap/@Area2D@28984" method="_on_body_entered"]

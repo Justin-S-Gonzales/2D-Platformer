@@ -3,6 +3,7 @@ extends CharacterBody2D
 @onready var sprite_2d = $Sprite2D
 @onready var animation_player = $AnimationPlayer
 @onready var area_2d = $Area2D
+@onready var up_ray_cast_2d = $UpRayCast2D
 
 @export var max_walking_speed = 80.0
 @export var max_running_speed = 160.0
@@ -13,6 +14,8 @@ var deceleration = 10.0
 var current_max_speed = 0.0
 
 @export var jump_velocity = -350.0
+
+@export var downward_bonk_velocity = 400.0
 
 var is_jumping = false
 var is_running = false
@@ -94,7 +97,15 @@ func _physics_process(delta):
 				animation_player.play(&"run")
 			else:
 				animation_player.play(&"walk")
-			
+	
+	# Raycasts
+	if up_ray_cast_2d.is_colliding():
+		if up_ray_cast_2d.get_collider() is Block:
+			var block = up_ray_cast_2d.get_collider()
+			if block.get_content_amount() > 0:
+				coin_collected.emit()		
+			block.play_animation()		
+			velocity.y += downward_bonk_velocity
 
 	move_and_slide()
 
@@ -105,8 +116,9 @@ func _on_area_2d_area_entered(area):
 		coin_collected.emit()
 
 func _on_area_2d_body_entered(body):
-	if body is Block: # && body.position.y < position.y
-		if body.get_content_amount() > 0:
-			coin_collected.emit()		
-			
-		body.play_animation()		
+	pass
+	#if body is Block: # && body.position.y < position.y
+		#if body.get_content_amount() > 0:
+			#coin_collected.emit()		
+			#
+		#body.play_animation()		
