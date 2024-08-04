@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 @onready var sprite_2d = $Sprite2D
 @onready var animation_player = $AnimationPlayer
+@onready var area_2d = $Area2D
 
 @export var max_walking_speed = 80.0
 @export var max_running_speed = 160.0
@@ -22,6 +23,8 @@ var facing_direction = 1
 @export var jump_gravity = 800
 
 var current_gravity = gravity
+
+signal coin_collected
 
 func _physics_process(delta):	
 	# Get the input direction
@@ -88,3 +91,9 @@ func _physics_process(delta):
 			
 
 	move_and_slide()
+
+func _on_area_2d_area_entered(area):
+	if area is Coin:
+		var coin = area as Coin
+		coin.play_animation()
+		coin_collected.emit()

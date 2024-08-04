@@ -10,6 +10,6 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	var cellAtPlayerPosition = get_cell_tile_data(0, local_to_map(player.position))
+	var cellAtPlayerPosition = get_used_cells
 	if cellAtPlayerPosition is Coin:
 		cellAtPlayerPosition.play_animation()
