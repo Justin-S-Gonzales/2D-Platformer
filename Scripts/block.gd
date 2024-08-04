@@ -10,7 +10,6 @@ var content
 @export var content_amount = 1
 
 func _ready():
-	# content = Coin.new() as Coin
 	sprite_2d.frame = 0
 	
 func play_animation():
@@ -21,11 +20,9 @@ func play_animation():
 	animation_player.play(&"hit")
 	create_content()
 	if content is Coin:
-		content.set_visible(true)
 		content.play_animation()
 		
 	content_amount -= 1	
-		
 		
 func get_content_amount():
 	return content_amount
@@ -33,5 +30,4 @@ func get_content_amount():
 func create_content():
 	content = contentScene.instantiate()
 	add_child(content)
-	content.set_visible(false)
 	content.position.y += content_y_offset
