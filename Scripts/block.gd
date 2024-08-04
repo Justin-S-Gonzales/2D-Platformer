@@ -14,22 +14,19 @@ func _ready():
 	sprite_2d.frame = 0
 	
 func play_animation():
-	if content_amount > 0:
-		animation_player.play(&"hit")
-	else:
+	if content_amount <= 0:
 		animation_player.play(&"hit_without_content")
-	
-	if content_amount > 0 && !content:
-		create_content()
-	
-	if !content || content_amount <= 0:
 		return
-	
+		
+	animation_player.play(&"hit")
+	create_content()
 	if content is Coin:
 		content.set_visible(true)
 		content.play_animation()
-		content_amount -= 1
-
+		
+	content_amount -= 1	
+		
+		
 func get_content_amount():
 	return content_amount
 

@@ -1,6 +1,6 @@
-extends Area2D
+extends Node2D
 
-class_name MultiCoinBlock
+class_name MultiCoinBlock2
 
 @onready var block = $Block
 var rng = RandomNumberGenerator.new()

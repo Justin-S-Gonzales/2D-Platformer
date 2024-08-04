@@ -1,4 +1,6 @@
-class_name Coin extends Area2D
+extends Area2D
+
+class_name Coin
 
 @onready var animation_player = $AnimationPlayer
 @onready var sprite_2d = $Sprite2D

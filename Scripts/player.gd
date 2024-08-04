@@ -103,21 +103,10 @@ func _on_area_2d_area_entered(area):
 		var coin = area as Coin
 		area.play_animation()
 		coin_collected.emit()
-		#
-	#if area is SingleCoinBlock:
-		#var block = area as SingleCoinBlock
-		#block.play_animation()
-		#if block.get_content_amount() > 0:
-			#coin_collected.emit()
-			#
-	#if area is MultiCoinBlock:
-		#var block = area as MultiCoinBlock
-		#block.play_animation()
-		#if block.get_content_amount() > 0:
-			#coin_collected.emit()
 
 func _on_area_2d_body_entered(body):
 	if body is Block: # && body.position.y < position.y
-		body.play_animation()
 		if body.get_content_amount() > 0:
 			coin_collected.emit()		
+			
+		body.play_animation()		
