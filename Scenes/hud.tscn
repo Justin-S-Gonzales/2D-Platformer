@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://cfsmscduqdce"]
+
+[ext_resource type="Script" path="res://scripts/hud.gd" id="1_52waj"]
+[ext_resource type="FontFile" uid="uid://dqhp0a77k6tow" path="res://Fonts/PixelOperator8.ttf" id="1_g7105"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_52waj")
+
+[node name="ScoreLabel" type="Label" parent="."]
+offset_left = 22.0
+offset_top = 22.0
+offset_right = 132.0
+offset_bottom = 59.0
+theme_override_fonts/font = ExtResource("1_g7105")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1

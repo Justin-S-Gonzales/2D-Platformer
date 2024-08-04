@@ -7,34 +7,41 @@ extends CharacterBody2D
 @export var max_running_speed = 160.0
 
 @export var acceleration = 5.0
-var deceleration = 5.0
+var deceleration = 10.0
 
 var current_max_speed = 0.0
 
 @export var jump_velocity = -350.0
 
-var can_move = true
 var is_jumping = false
 var is_running = false
 var facing_direction = 1
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
-var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+@export var gravity = 2000.0
+@export var jump_gravity = 800
+
+var current_gravity = gravity
 
 func _physics_process(delta):	
 	# Get the input direction
 	var direction = Input.get_axis("move_left", "move_right")
 	
-	# Add the gravity.
-	if not is_on_floor():
-		velocity.y += gravity * delta
-
 	# Handle jump.
 	if Input.is_action_pressed(&"jump") and is_on_floor():
 		velocity.y = jump_velocity
 		is_jumping = true
+		current_gravity = jump_gravity
 	elif is_on_floor():
 		is_jumping = false
+		
+	if !Input.is_action_pressed(&"jump"):
+		current_gravity = gravity
+		
+	if velocity.y > 0:
+		current_gravity = gravity
+	
+	velocity.y += current_gravity * delta
 	
 	# Running and walking
 	if Input.is_action_pressed(&"run"):
@@ -71,7 +78,8 @@ func _physics_process(delta):
 		# idle
 		if direction == 0:
 			animation_player.stop()
-			sprite_2d.frame = 1
+			if !animation_player.is_playing():
+				sprite_2d.frame = 1
 		else: # running or walking
 			if is_running:
 				animation_player.play(&"run")
