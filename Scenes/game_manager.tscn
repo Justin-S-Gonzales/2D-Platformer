@@ -6,7 +6,6 @@
 
 [node name="GameManager" type="Node"]
 script = ExtResource("1_bd34r")
-lives = 1
 
 [node name="HUD" parent="." instance=ExtResource("2_3ck1o")]
 

@@ -7,6 +7,9 @@ signal player_died
 
 @onready var start_position = $"Start Position"
 @onready var player = $Player
+@onready var respawn_timer = $RespawnTimer
+
+var game_over_camera
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -21,15 +24,28 @@ func _on_player_coin_collected():
 
 func _on_player_fell_to_player_death():
 	player_died.emit()
-	player.position = start_position.position
+	game_over()
+	respawn_timer.start()
 
 func game_over():
-	var game_over_camera = Camera2D.new()
+	game_over_camera = player.get_camera().duplicate()
 	add_child(game_over_camera)
-	game_over_camera.make_current()
 	game_over_camera.position = player.position
-	game_over_camera.set_zoom(Vector2(4.0, 4.0))
-	game_over_camera.set_limit(SIDE_LEFT, -144)
-	game_over_camera.set_limit(SIDE_BOTTOM, 80)
 	
-	player.queue_free()	
+	player.queue_free()		
+	
+	game_over_camera.make_current()
+	
+func reset_player_position():
+	game_over_camera.queue_free()
+	player.position = start_position.position	
+
+func _on_respawn_timer_timeout():
+	player = load("res://Scenes/player.tscn").instantiate()
+	add_child(player)
+	reset_player_position()
+	connect_player_signals()
+	
+func connect_player_signals():
+	player.coin_collected.connect(_on_player_coin_collected)
+	player.fell_to_player_death.connect(_on_player_fell_to_player_death)

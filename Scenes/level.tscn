@@ -349,5 +349,9 @@ shape = SubResource("RectangleShape2D_wa63o")
 
 [node name="Start Position" type="Marker2D" parent="."]
 
+[node name="RespawnTimer" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="coin_collected" from="Player" to="." method="_on_player_coin_collected"]
 [connection signal="fell_to_player_death" from="Player" to="." method="_on_player_fell_to_player_death"]
+[connection signal="timeout" from="RespawnTimer" to="." method="_on_respawn_timer_timeout"]

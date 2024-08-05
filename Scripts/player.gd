@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+class_name Player
+
 # Signals
 signal coin_collected
 signal fell_to_player_death
@@ -8,6 +10,7 @@ signal fell_to_player_death
 @onready var animation_player = $AnimationPlayer
 @onready var area_2d = $Area2D
 @onready var up_ray_cast_2d = $UpRayCast2D
+@onready var camera_2d = $Camera2D
 
 # Speeds and velocities
 @export var max_walking_speed = 80.0
@@ -119,3 +122,7 @@ func _on_area_2d_area_entered(area):
 		var coin = area as Coin
 		area.play_animation()
 		coin_collected.emit()
+
+# Camera
+func get_camera():
+	return camera_2d
