@@ -347,4 +347,7 @@ position = Vector2(-184, 2)
 position = Vector2(15, -110.5)
 shape = SubResource("RectangleShape2D_wa63o")
 
+[node name="Start Position" type="Marker2D" parent="."]
+
 [connection signal="coin_collected" from="Player" to="." method="_on_player_coin_collected"]
+[connection signal="fell_to_player_death" from="Player" to="." method="_on_player_fell_to_player_death"]

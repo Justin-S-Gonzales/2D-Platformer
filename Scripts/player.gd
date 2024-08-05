@@ -1,5 +1,9 @@
 extends CharacterBody2D
 
+# Signals
+signal coin_collected
+signal fell_to_player_death
+
 @onready var sprite_2d = $Sprite2D
 @onready var animation_player = $AnimationPlayer
 @onready var area_2d = $Area2D
@@ -27,8 +31,8 @@ var can_jump = true
 @export var jump_gravity = 800
 var current_gravity = gravity
 
-# Signals
-signal coin_collected
+# Boundaries
+@export var death_height = 80
 
 func _physics_process(delta):	
 	# Get the input direction
@@ -103,6 +107,10 @@ func _physics_process(delta):
 				coin_collected.emit()		
 			block.play_animation()		
 			velocity.y += downward_bonk_velocity
+			
+	# Check for death from fall
+	if position.y > death_height:
+		fell_to_player_death.emit()
 
 	move_and_slide()
 
