@@ -6,11 +6,20 @@
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_52waj")
 
-[node name="ScoreLabel" type="Label" parent="."]
-offset_left = 22.0
-offset_top = 22.0
-offset_right = 132.0
-offset_bottom = 59.0
+[node name="LivesLabel" type="Label" parent="."]
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 134.0
+offset_bottom = 57.0
 theme_override_fonts/font = ExtResource("1_g7105")
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 28
+vertical_alignment = 1
+
+[node name="CoinLabel" type="Label" parent="."]
+offset_left = 273.0
+offset_top = 21.0
+offset_right = 383.0
+offset_bottom = 58.0
+theme_override_fonts/font = ExtResource("1_g7105")
+theme_override_font_sizes/font_size = 28
 vertical_alignment = 1

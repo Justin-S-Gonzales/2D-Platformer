@@ -1,14 +1,17 @@
 extends CanvasLayer
 
-@onready var score_label = $ScoreLabel
-
-var score = 0
+@onready var coin_label = $CoinLabel
+@onready var lives_label = $LivesLabel
 
 var scoreText = "Coins: "
+var livesText = "Lives: "
 
-func add_point():
-	score += 1
-	score_label.text = scoreText + str(score)
+func set_coins(coins):
+	coin_label.text = scoreText + str(coins)
+	
+func set_lives(lives):
+	lives_label.text = livesText + str(lives)	
 
 func _ready():
-	score_label.text = scoreText + "0"
+	coin_label.text = scoreText + &"0"
+	lives_label.text = livesText + &"0"
