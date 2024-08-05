@@ -9,7 +9,8 @@ signal fell_to_player_death
 @onready var sprite_2d = $Sprite2D
 @onready var animation_player = $AnimationPlayer
 @onready var area_2d = $Area2D
-@onready var up_ray_cast_2d = $UpRayCast2D
+@onready var down_shape_cast_2d = $DownShapeCast2D
+@onready var up_shape_cast_2d = $UpShapeCast2D
 @onready var camera_2d = $Camera2D
 
 # Speeds and velocities
@@ -22,6 +23,7 @@ var deceleration = 10.0
 
 @export var jump_velocity = -350.0
 @export var downward_bonk_velocity = 400.0
+@export var upward_bounce_velocity = -100.0
 
 # Flags
 var is_jumping = false
@@ -38,11 +40,15 @@ var current_gravity = gravity
 @export var death_height = 80
 
 func _physics_process(delta):	
+	# Check for death from fall
+	if position.y > death_height:
+		fell_to_player_death.emit()
+		
 	# Get the input direction
 	var direction = Input.get_axis("move_left", "move_right")
 	
 	# Handle jump.
-	if Input.is_action_pressed(&"jump") and is_on_floor() && can_jump:
+	if Input.is_action_pressed(&"jump") and (is_on_floor() && can_jump || down_shape_cast_2d.get_collider(0) is Tomato):
 		velocity.y = jump_velocity
 		is_jumping = true
 		current_gravity = jump_gravity
@@ -103,17 +109,22 @@ func _physics_process(delta):
 			animation_player.play(&"walk")
 	
 	# Raycasts
-	if up_ray_cast_2d.is_colliding():
-		if up_ray_cast_2d.get_collider() is Block:
-			var block = up_ray_cast_2d.get_collider()
+	if up_shape_cast_2d.is_colliding():
+		if up_shape_cast_2d.get_collider(0) is Block:
+			var block = up_shape_cast_2d.get_collider(0)
 			if block.get_content_amount() > 0:
 				coin_collected.emit()		
 			block.play_animation()		
 			velocity.y += downward_bonk_velocity
 			
-	# Check for death from fall
-	if position.y > death_height:
-		fell_to_player_death.emit()
+	# Enemies
+	if down_shape_cast_2d.is_colliding():
+		if down_shape_cast_2d.get_collider(0) is Tomato:
+			var tomato = down_shape_cast_2d.get_collider(0)
+			tomato.die()		
+			coin_collected.emit()
+			if !Input.is_action_pressed(&"jump"):
+				velocity.y += upward_bounce_velocity
 
 	move_and_slide()
 
