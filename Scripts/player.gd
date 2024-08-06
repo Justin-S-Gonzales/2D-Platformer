@@ -8,10 +8,10 @@ signal fell_to_player_death
 
 @onready var sprite_2d = $Sprite2D
 @onready var animation_player = $AnimationPlayer
-@onready var area_2d = $Area2D
-@onready var down_shape_cast_2d = $DownShapeCast2D
-@onready var up_shape_cast_2d = $UpShapeCast2D
 @onready var camera_2d = $Camera2D
+@onready var body_area_2d = $BodyArea2D
+@onready var downward_area_2d = $DownwardArea2D
+@onready var area_2d = $Area2D
 
 # Speeds and velocities
 @export var max_walking_speed = 80.0
@@ -109,36 +109,38 @@ func _physics_process(delta):
 			animation_player.play(&"walk")
 	
 	# Raycasts
-	if up_shape_cast_2d.is_colliding():
-		if up_shape_cast_2d.get_collider(0) is Block:
-			var block = up_shape_cast_2d.get_collider(0)
-			if block.get_content_amount() > 0:
-				coin_collected.emit()		
-			block.play_animation()		
-			velocity.y += downward_bonk_velocity
 			
 	# Enemies
-	if down_shape_cast_2d.is_colliding():
-		if down_shape_cast_2d.get_collider(0) is Tomato:
-			var tomato = down_shape_cast_2d.get_collider(0)
-			tomato.die()
-			coin_collected.emit()
-			if !Input.is_action_pressed(&"jump"):
-				velocity.y = upward_bounce_velocity
-			else:
-				velocity.y = jump_velocity
-				is_jumping = true
-				current_gravity = jump_gravity
-				can_jump = false
 
 	move_and_slide()
-
-func _on_area_2d_area_entered(area):
-	if area is Coin:
-		var coin = area as Coin
-		area.play_animation()
-		coin_collected.emit()
 
 # Camera
 func get_camera():
 	return camera_2d
+
+func _on_body_area_2d_area_entered(area):
+	if area is Coin:
+		var coin = area as Coin
+		area.play_animation()
+		coin_collected.emit()
+		
+func _on_downward_area_2d_body_entered(body):
+	if body is Tomato && !body.is_dead:
+		var tomato = body
+		tomato.die()
+		coin_collected.emit()
+		if !Input.is_action_pressed(&"jump"):
+			velocity.y = upward_bounce_velocity
+		else:
+			velocity.y = jump_velocity
+			is_jumping = true
+			current_gravity = jump_gravity
+			can_jump = false
+
+func _on_upward_area_2d_body_entered(body):
+	if body is Block:
+		var block = body
+		if block.get_content_amount() > 0:
+			coin_collected.emit()		
+		block.play_animation()		
+		velocity.y += downward_bonk_velocity

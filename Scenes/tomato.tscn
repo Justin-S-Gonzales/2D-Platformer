@@ -3,9 +3,6 @@
 [ext_resource type="Script" path="res://Scripts/tomato.gd" id="1_2xb2r"]
 [ext_resource type="Texture2D" uid="uid://bwv6vbv8xepb3" path="res://Sprites/tomato_guy_sheet.png" id="1_4ld1i"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_s0fdm"]
-size = Vector2(15, 13)
-
 [sub_resource type="Animation" id="Animation_bnnlf"]
 length = 0.001
 tracks/0/type = "value"
@@ -56,16 +53,15 @@ _data = {
 "walk": SubResource("Animation_7hq7u")
 }
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v5jtf"]
+size = Vector2(14, 12)
+
 [node name="Tomato" type="CharacterBody2D"]
 script = ExtResource("1_2xb2r")
 speed = 50.0
 static_body_bounce = 300.0
 coin_spawn_offset = 30.0
 metadata/_edit_group_ = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0.5, 1.5)
-shape = SubResource("RectangleShape2D_s0fdm")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -83,3 +79,7 @@ target_position = Vector2(-11, 0)
 
 [node name="RightRayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(11, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_v5jtf")

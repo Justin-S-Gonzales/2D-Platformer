@@ -65,11 +65,11 @@ size = Vector2(11, 11)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3r6sm"]
 size = Vector2(16, 15)
 
-[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_2d7wu"]
-points = PackedVector2Array(1, 0, 0, 1, -1, 0)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nt2gy"]
+size = Vector2(11, 4)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_x0vux"]
-size = Vector2(10, 15)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ljvvv"]
+size = Vector2(8, 5)
 
 [node name="Player" type="CharacterBody2D"]
 z_index = 5
@@ -80,6 +80,7 @@ jump_velocity = -300.0
 upward_bounce_velocity = -300.0
 gravity = 1700.0
 jump_gravity = 650
+metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_p6tfg")
@@ -92,15 +93,8 @@ libraries = {
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0.5, 2.5)
+position = Vector2(0, 2.5)
 shape = SubResource("RectangleShape2D_qbebo")
-
-[node name="Area2D" type="Area2D" parent="."]
-visible = false
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(0, 0.5)
-shape = SubResource("RectangleShape2D_3r6sm")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(4, 4)
@@ -110,14 +104,33 @@ limit_bottom = 80
 position_smoothing_enabled = true
 position_smoothing_speed = 15.0
 
-[node name="DownShapeCast2D" type="ShapeCast2D" parent="."]
-position = Vector2(0.5, 4)
-scale = Vector2(5.5, 3)
-shape = SubResource("ConvexPolygonShape2D_2d7wu")
-target_position = Vector2(0, 1.33333)
+[node name="RightRayCast2D" type="RayCast2D" parent="."]
+position = Vector2(0, 2)
+target_position = Vector2(9, 0)
 
-[node name="UpShapeCast2D" type="ShapeCast2D" parent="."]
-shape = SubResource("RectangleShape2D_x0vux")
-target_position = Vector2(0, -5)
+[node name="LeftRayCast2D" type="RayCast2D" parent="."]
+position = Vector2(0, 2)
+target_position = Vector2(-8, 0)
 
-[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
+[node name="BodyArea2D" type="Area2D" parent="."]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BodyArea2D"]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_3r6sm")
+
+[node name="DownwardArea2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DownwardArea2D"]
+position = Vector2(0, 8)
+shape = SubResource("RectangleShape2D_nt2gy")
+
+[node name="UpwardArea2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpwardArea2D"]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_ljvvv")
+
+[connection signal="area_entered" from="BodyArea2D" to="." method="_on_body_area_2d_area_entered"]
+[connection signal="body_entered" from="DownwardArea2D" to="." method="_on_downward_area_2d_body_entered"]
+[connection signal="body_entered" from="UpwardArea2D" to="." method="_on_upward_area_2d_body_entered"]
