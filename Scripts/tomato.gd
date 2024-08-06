@@ -1,17 +1,15 @@
-extends CharacterBody2D
+class_name Tomato extends CharacterBody2D
 
-class_name Tomato
-
+@onready var animation_player = $AnimationPlayer
+@onready var sprite_2d = $Sprite2D
 @onready var left_ray_cast_2d = $LeftRayCast2D
 @onready var right_ray_cast_2d = $RightRayCast2D
-@onready var sprite_2d = $Sprite2D
-@onready var animation_player = $AnimationPlayer
 @onready var collision_shape_2d = $CollisionShape2D
 
 # Velocities and speeds
-@export var speed = 100.0
+@export var speed = 60.0
 @export var gravity = 200.0
-@export var static_body_bounce = 80.0
+@export var static_body_bounce = 300.0
 var death_bounce = 100.0
 var direction = -1
 
@@ -38,7 +36,7 @@ func _physics_process(delta):
 		if left_ray_cast_2d.is_colliding() || right_ray_cast_2d.is_colliding():
 			if !(left_ray_cast_2d.get_collider() is Player) || !(right_ray_cast_2d.get_collider() is Player):
 				direction = -direction
-				velocity.x -= sign(velocity.x) * static_body_bounce
+				velocity.x = -sign(velocity.x) * static_body_bounce
 				sprite_2d.flip_h = !sprite_2d.flip_h
 
 	move_and_slide()
@@ -48,7 +46,8 @@ func die():
 	is_dead = true
 	collision_shape_2d.queue_free()
 	velocity.y -= death_bounce
-	# spawn a coin
+	
+	# Spawn a coin
 	var coin = coin_scene.instantiate()
 	get_parent().get_parent().add_child(coin)
 	coin.position = Vector2(position.x, position.y - coin_spawn_offset)

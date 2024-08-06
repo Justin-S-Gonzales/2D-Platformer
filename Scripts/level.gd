@@ -4,10 +4,14 @@ class_name Level
 
 signal coin_collected
 signal player_died
+signal player_got_hit
+signal player_respawned
 
 @onready var start_position = $"Start Position"
 @onready var player = $Player
 @onready var respawn_timer = $RespawnTimer
+
+var respawn_player = true
 
 var game_over_camera
 
@@ -25,7 +29,8 @@ func _on_player_coin_collected():
 func _on_player_fell_to_player_death():
 	player_died.emit()
 	game_over()
-	respawn_timer.start()
+	if respawn_player:
+		respawn_timer.start()
 
 func game_over():
 	game_over_camera = player.get_camera().duplicate()
@@ -45,7 +50,15 @@ func _on_respawn_timer_timeout():
 	add_child(player)
 	reset_player_position()
 	connect_player_signals()
+	player_respawned.emit()
 	
 func connect_player_signals():
 	player.coin_collected.connect(_on_player_coin_collected)
 	player.fell_to_player_death.connect(_on_player_fell_to_player_death)
+	player.got_hit.connect(_on_player_got_hit)
+
+func get_player_health():
+	return player.get_health()
+
+func _on_player_got_hit():
+	player_got_hit.emit()

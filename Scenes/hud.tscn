@@ -24,6 +24,15 @@ theme_override_fonts/font = ExtResource("1_g7105")
 theme_override_font_sizes/font_size = 28
 vertical_alignment = 1
 
+[node name="HealthLabel" type="Label" parent="."]
+offset_left = 520.0
+offset_top = 21.0
+offset_right = 630.0
+offset_bottom = 58.0
+theme_override_fonts/font = ExtResource("1_g7105")
+theme_override_font_sizes/font_size = 28
+vertical_alignment = 1
+
 [node name="Game Over Text" type="Label" parent="."]
 anchors_preset = 8
 anchor_left = 0.5

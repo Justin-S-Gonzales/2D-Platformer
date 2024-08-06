@@ -9,6 +9,8 @@ var one_up_coins_count = 100
 
 func _ready():
 	hud.set_lives(lives)
+	
+	hud.set_health(level_1.get_player_health())
 
 func _on_level_coin_collected():
 	coins += 1
@@ -23,5 +25,12 @@ func _on_level_1_player_died():
 	if lives < 0:
 		hud.show_game_over()
 		level_1.game_over()
+		level_1.respawn_player = false
 	else:
 		hud.set_lives(lives)
+
+func _on_level_1_player_got_hit():
+	hud.set_health(level_1.get_player_health())
+
+func _on_level_1_player_respawned():
+	hud.set_health(level_1.get_player_health())

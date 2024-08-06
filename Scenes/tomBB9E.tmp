@@ -1,7 +1,65 @@
 [gd_scene load_steps=7 format=3 uid="uid://ddlxr0mbji4rf"]
 
-[ext_resource type="Script" path="res://Scripts/tomato.gd" id="1_2ndlc"]
 [ext_resource type="Texture2D" uid="uid://bwv6vbv8xepb3" path="res://Sprites/tomato_guy_sheet.png" id="1_4ld1i"]
+
+[sub_resource type="GDScript" id="GDScript_4mxxe"]
+script/source = "
+class_name Tomato 
+extends CharacterBody2D
+
+@onready var left_ray_cast_2d = $LeftRayCast2D
+@onready var right_ray_cast_2d = $RightRayCast2D
+@onready var sprite_2d = $Sprite2D
+@onready var animation_player = $AnimationPlayer
+@onready var collision_shape_2d = $CollisionShape2D
+
+# Velocities and speeds
+@export var speed = 100.0
+@export var gravity = 200.0
+@export var static_body_bounce = 80.0
+var death_bounce = 100.0
+var direction = -1
+
+# Boundaries
+@export var death_height = 80
+
+# Flags
+var is_dead = false
+
+# Coin
+@export var coin_spawn_offset = 20.0
+var coin_scene = preload(\"res://Scenes/coin.tscn\")
+
+func _physics_process(delta):
+	if position.y > death_height:
+		queue_free()
+	
+	# Add the gravity
+	velocity.y += gravity * delta
+
+	velocity.x = direction * speed
+	
+	if !is_dead:
+		if left_ray_cast_2d.is_colliding() || right_ray_cast_2d.is_colliding():
+			if !(left_ray_cast_2d.get_collider() is Player) || !(right_ray_cast_2d.get_collider() is Player):
+				direction = -direction
+				velocity.x -= sign(velocity.x) * static_body_bounce
+				sprite_2d.flip_h = !sprite_2d.flip_h
+
+	move_and_slide()
+
+func die():
+	sprite_2d.flip_v = true
+	is_dead = true
+	collision_shape_2d.queue_free()
+	velocity.y -= death_bounce
+	
+	# Spawn a coin
+	var coin = coin_scene.instantiate()
+	get_parent().get_parent().add_child(coin)
+	coin.position = Vector2(position.x, position.y - coin_spawn_offset)
+	coin.play_animation()
+"
 
 [sub_resource type="Animation" id="Animation_bnnlf"]
 length = 0.001
@@ -57,7 +115,12 @@ _data = {
 size = Vector2(14, 12)
 
 [node name="Tomato" type="CharacterBody2D"]
-script = ExtResource("1_2ndlc")
+script = SubResource("GDScript_4mxxe")
+speed = null
+gravity = null
+static_body_bounce = null
+death_height = null
+coin_spawn_offset = null
 metadata/_edit_group_ = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

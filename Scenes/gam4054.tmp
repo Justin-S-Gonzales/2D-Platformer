@@ -6,7 +6,6 @@
 
 [node name="GameManager" type="Node"]
 script = ExtResource("1_bd34r")
-lives = 2
 
 [node name="HUD" parent="." instance=ExtResource("2_3ck1o")]
 
@@ -15,4 +14,3 @@ lives = 2
 [connection signal="coin_collected" from="Level1" to="." method="_on_level_coin_collected"]
 [connection signal="player_died" from="Level1" to="." method="_on_level_1_player_died"]
 [connection signal="player_got_hit" from="Level1" to="." method="_on_level_1_player_got_hit"]
-[connection signal="player_respawned" from="Level1" to="." method="_on_level_1_player_respawned"]

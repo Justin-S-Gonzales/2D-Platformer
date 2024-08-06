@@ -76,10 +76,16 @@ size = Vector2(8, 5)
 z_index = 5
 collision_layer = 2
 script = ExtResource("1_weqlp")
+max_walking_speed = null
 max_running_speed = 200.0
+acceleration = null
 jump_velocity = -300.0
+downward_bonk_velocity = null
 upward_bounce_velocity = -300.0
+gravity = 1700.0
 jump_gravity = 650
+death_height = null
+metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_p6tfg")
@@ -102,6 +108,8 @@ limit_left = -144
 limit_bottom = 80
 position_smoothing_enabled = true
 position_smoothing_speed = 15.0
+
+[node name="Health" parent="." instance=ExtResource("3_k18on")]
 
 [node name="RightRayCast2D" type="RayCast2D" parent="."]
 position = Vector2(0, 2)
@@ -129,9 +137,6 @@ shape = SubResource("RectangleShape2D_nt2gy")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UpwardArea2D"]
 position = Vector2(0, -3)
 shape = SubResource("RectangleShape2D_ljvvv")
-
-[node name="Health" parent="." instance=ExtResource("3_k18on")]
-_health = 2
 
 [connection signal="area_entered" from="BodyArea2D" to="." method="_on_body_area_2d_area_entered"]
 [connection signal="body_entered" from="DownwardArea2D" to="." method="_on_downward_area_2d_body_entered"]
