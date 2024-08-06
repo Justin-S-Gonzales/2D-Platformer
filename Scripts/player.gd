@@ -48,7 +48,7 @@ func _physics_process(delta):
 	var direction = Input.get_axis("move_left", "move_right")
 	
 	# Handle jump.
-	if Input.is_action_pressed(&"jump") and (is_on_floor() && can_jump || down_shape_cast_2d.get_collider(0) is Tomato):
+	if Input.is_action_pressed(&"jump") && is_on_floor() && can_jump:
 		velocity.y = jump_velocity
 		is_jumping = true
 		current_gravity = jump_gravity
@@ -121,10 +121,15 @@ func _physics_process(delta):
 	if down_shape_cast_2d.is_colliding():
 		if down_shape_cast_2d.get_collider(0) is Tomato:
 			var tomato = down_shape_cast_2d.get_collider(0)
-			tomato.die()		
+			tomato.die()
 			coin_collected.emit()
 			if !Input.is_action_pressed(&"jump"):
-				velocity.y += upward_bounce_velocity
+				velocity.y = upward_bounce_velocity
+			else:
+				velocity.y = jump_velocity
+				is_jumping = true
+				current_gravity = jump_gravity
+				can_jump = false
 
 	move_and_slide()
 

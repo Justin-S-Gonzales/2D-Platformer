@@ -46,8 +46,8 @@ func _physics_process(delta):
 func die():
 	sprite_2d.flip_v = true
 	is_dead = true
-	velocity.y -= death_bounce
 	collision_shape_2d.disabled = true
+	velocity.y -= death_bounce
 	# spawn a coin
 	var coin = coin_scene.instantiate()
 	get_parent().get_parent().add_child(coin)

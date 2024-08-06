@@ -65,11 +65,11 @@ size = Vector2(11, 11)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3r6sm"]
 size = Vector2(16, 15)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_6wwqa"]
-radius = 4.0
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_2d7wu"]
+points = PackedVector2Array(1, 0, 0, 1, -1, 0)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x0vux"]
-size = Vector2(15, 15)
+size = Vector2(10, 15)
 
 [node name="Player" type="CharacterBody2D"]
 z_index = 5
@@ -111,12 +111,12 @@ position_smoothing_enabled = true
 position_smoothing_speed = 15.0
 
 [node name="DownShapeCast2D" type="ShapeCast2D" parent="."]
-position = Vector2(0, 2)
-shape = SubResource("CircleShape2D_6wwqa")
-target_position = Vector2(0, 5)
+position = Vector2(0.5, 4)
+scale = Vector2(5.5, 3)
+shape = SubResource("ConvexPolygonShape2D_2d7wu")
+target_position = Vector2(0, 1.33333)
 
 [node name="UpShapeCast2D" type="ShapeCast2D" parent="."]
-visible = false
 shape = SubResource("RectangleShape2D_x0vux")
 target_position = Vector2(0, -5)
 
