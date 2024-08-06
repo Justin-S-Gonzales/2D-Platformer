@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://b0gmgnuo2jift"]
+[gd_scene load_steps=8 format=3 uid="uid://b0gmgnuo2jift"]
 
 [ext_resource type="Script" path="res://Scripts/breakable_block.gd" id="1_4t6o4"]
 [ext_resource type="Texture2D" uid="uid://brvm87e282csu" path="res://Sprites/block_break.png" id="1_6rpwn"]
+[ext_resource type="PackedScene" uid="uid://c6jdtypklm3oc" path="res://Scenes/coin.tscn" id="2_febii"]
 
 [sub_resource type="Animation" id="Animation_onxpn"]
 resource_name = "block_break"
@@ -59,6 +60,8 @@ size = Vector2(16, 16)
 
 [node name="BreakableBlock" type="StaticBody2D"]
 script = ExtResource("1_4t6o4")
+contentScene = ExtResource("2_febii")
+has_content = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_6rpwn")

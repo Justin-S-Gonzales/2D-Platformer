@@ -170,16 +170,19 @@ func _on_upward_area_2d_body_entered(body):
 	if is_dead:
 		return 
 		
+	if body is Block || body is BreakableBlock:
+		velocity.y = downward_bonk_velocity
+		
 	if body is Block:
 		var block = body
 		if block.get_content_amount() > 0:
 			coin_collected.emit()		
 		block.play_animation()		
-		velocity.y += downward_bonk_velocity
 	
 	if body is BreakableBlock:
 		var block = body
 		block.play_animation()
+	
 
 func die():
 	sprite_2d.flip_v = true
