@@ -81,14 +81,12 @@ func _physics_process(delta):
 		velocity.y = hit_bonk_y_velocity
 		
 	# Handle jump.
-	if Input.is_action_pressed(&"jump") && is_on_floor() && can_jump:
-		velocity.y = jump_velocity
-		is_jumping = true
-		current_gravity = jump_gravity
-		can_jump = false
-	elif is_on_floor():
+
+	if Input.is_action_pressed(&"jump") && can_jump:
+		jump()
+	elif is_on_floor(): 
 		is_jumping = false
-	
+		
 	# This is here to make it that you must re-press the jump button to jump again
 	if is_on_floor() && !Input.is_action_pressed(&"jump"):
 		can_jump = true
@@ -130,11 +128,9 @@ func _physics_process(delta):
 		
 	# Play animations
 	if is_jumping: # Jumping
-		animation_player.stop()
-		sprite_2d.frame = 3
+		play_jump_animation()
 	elif direction == 0: # Idle
-		animation_player.stop()
-		sprite_2d.frame = 1
+		play_idle_animation()
 	else: # Running or walking
 		if is_running:
 			animation_player.play(&"run")
@@ -166,11 +162,9 @@ func _on_downward_area_2d_body_entered(body):
 		coin_collected.emit()
 		if !Input.is_action_pressed(&"jump"):
 			velocity.y = upward_bounce_velocity
-		else:
-			velocity.y = jump_velocity
 			is_jumping = true
-			current_gravity = jump_gravity
-			can_jump = false
+		else:	
+			jump()
 
 func _on_upward_area_2d_body_entered(body):
 	if is_dead:
@@ -187,9 +181,23 @@ func die():
 	sprite_2d.flip_v = true
 	is_dead = true
 	collision_shape_2d.queue_free()
-	velocity.y -= death_bounce
+	velocity.y = -death_bounce
 	current_gravity = death_gravity
 
 func get_health():
 	health.get_health()
 	return health.get_health()
+
+func jump():
+	velocity.y = jump_velocity
+	is_jumping = true
+	current_gravity = jump_gravity
+	can_jump = false
+	
+func play_jump_animation():
+	animation_player.stop()
+	sprite_2d.frame = 3
+
+func play_idle_animation():
+	animation_player.stop()
+	sprite_2d.frame = 1
