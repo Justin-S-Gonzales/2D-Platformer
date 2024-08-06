@@ -176,6 +176,10 @@ func _on_upward_area_2d_body_entered(body):
 			coin_collected.emit()		
 		block.play_animation()		
 		velocity.y += downward_bonk_velocity
+	
+	if body is BreakableBlock:
+		var block = body
+		block.play_animation()
 
 func die():
 	sprite_2d.flip_v = true
@@ -190,8 +194,8 @@ func get_health():
 
 func jump():
 	velocity.y = jump_velocity
-	is_jumping = true
 	current_gravity = jump_gravity
+	is_jumping = true
 	can_jump = false
 	
 func play_jump_animation():

@@ -1,0 +1,75 @@
+[gd_scene load_steps=7 format=3 uid="uid://b0gmgnuo2jift"]
+
+[ext_resource type="Script" path="res://Scripts/breakable_block.gd" id="1_4t6o4"]
+[ext_resource type="Texture2D" uid="uid://brvm87e282csu" path="res://Sprites/block_break.png" id="1_6rpwn"]
+
+[sub_resource type="Animation" id="Animation_onxpn"]
+resource_name = "block_break"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [13, 14, 15]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_b72r5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [13]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qvg22"]
+_data = {
+"RESET": SubResource("Animation_b72r5"),
+"block_break": SubResource("Animation_onxpn")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fwbfr"]
+size = Vector2(16, 16)
+
+[node name="BreakableBlock" type="StaticBody2D"]
+script = ExtResource("1_4t6o4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_6rpwn")
+hframes = 4
+vframes = 4
+frame = 13
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_qvg22")
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_fwbfr")
