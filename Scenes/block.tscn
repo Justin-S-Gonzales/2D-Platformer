@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bpcsd2m6ree7n"]
+[gd_scene load_steps=10 format=3 uid="uid://bpcsd2m6ree7n"]
 
 [ext_resource type="Texture2D" uid="uid://d0rdpgi1y5lfp" path="res://Sprites/8bit_platformer_overworld_tilemap.png" id="1_4j0np"]
 [ext_resource type="Script" path="res://Scripts/block.gd" id="1_vc2a6"]
@@ -97,6 +97,9 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1awk5"]
 size = Vector2(16, 16)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7gj5l"]
+size = Vector2(16, 10)
+
 [node name="Block" type="StaticBody2D"]
 script = ExtResource("1_vc2a6")
 content_y_offset = -20
@@ -118,3 +121,8 @@ stream = ExtResource("3_a8c0i")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_1awk5")
+
+[node name="UpShapeCast2D" type="ShapeCast2D" parent="."]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_7gj5l")
+target_position = Vector2(0, -7)

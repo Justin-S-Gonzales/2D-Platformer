@@ -1,0 +1,90 @@
+[gd_scene load_steps=8 format=3 uid="uid://brjg4y1ve34af"]
+
+[ext_resource type="Script" path="res://Scripts/tomatillo.gd" id="1_y8e0a"]
+[ext_resource type="Texture2D" uid="uid://c4b6mg1s820iu" path="res://Sprites/tomatillo_guy_sheet.png" id="2_7bi1t"]
+[ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="3_81o0g"]
+
+[sub_resource type="Animation" id="Animation_bnnlf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_7hq7u"]
+resource_name = "walk"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wiryi"]
+_data = {
+"RESET": SubResource("Animation_bnnlf"),
+"walk": SubResource("Animation_7hq7u")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v5jtf"]
+size = Vector2(14, 12)
+
+[node name="Tomatillo" type="CharacterBody2D"]
+script = ExtResource("1_y8e0a")
+metadata/_edit_group_ = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_wiryi")
+}
+autoplay = "walk"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_7bi1t")
+hframes = 3
+frame = 1
+
+[node name="LeftRayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(-11, 0)
+
+[node name="RightRayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(11, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_v5jtf")
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_81o0g")
+pitch_scale = 1.4
+
+[node name="DownRayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(0, 10)

@@ -1,4 +1,4 @@
-extends Node2D
+extends Node2D 
 class_name BreakableBlock
 
 @onready var animation_player = $AnimationPlayer
@@ -7,6 +7,7 @@ class_name BreakableBlock
 @onready var block_break_sound = $BlockBreakSound
 @onready var despawn_timer = $DespawnTimer
 @onready var collision_shape_2d = $CollisionShape2D
+@onready var up_shape_cast_2d = $UpShapeCast2D
 
 @export var contentScene: PackedScene 
 var content
@@ -16,6 +17,8 @@ var content
 var block_break_scale = Vector2(2.0, 2.0)
 
 var rng = RandomNumberGenerator.new()
+
+var enemyAbove = null
 
 func _ready():
 	sprite_2d.frame = 0
@@ -27,6 +30,9 @@ func play_animation():
 	animation_player.play("block_break")
 	gpu_particles_2d.emitting = true
 	
+	if enemyAbove != null:
+		enemyAbove.die()
+	
 	# Play sound
 	block_break_sound.pitch_scale += rng.randf_range(-5.0, 5.0) * 0.1 # Set pitch to be different every time
 	block_break_sound.play()
@@ -35,6 +41,12 @@ func play_animation():
 		create_content()
 		if content is Coin:
 			content.play_animation()
+			
+	# Kill enemies above
+	if up_shape_cast_2d.is_colliding() && up_shape_cast_2d.get_collider(0) is Tomato || up_shape_cast_2d.get_collider(0) is Tomatillo:
+		for n in range(up_shape_cast_2d.get_collision_count()):
+			if up_shape_cast_2d.get_collider(n) is Tomato || up_shape_cast_2d.get_collider(n) is Tomatillo:
+				up_shape_cast_2d.get_collider(n).die()
 		
 	collision_shape_2d.queue_free()
 	despawn_timer.start()
@@ -46,3 +58,10 @@ func create_content():
 
 func _on_despawn_timer_timeout():
 	queue_free()
+
+func _on_up_area_2d_body_entered(body):
+	if body is Tomato || body is Tomatillo:
+		var enemyAbove = body
+
+func _on_up_area_2d_body_exited(body):
+	enemyAbove = null 

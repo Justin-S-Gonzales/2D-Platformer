@@ -1,0 +1,57 @@
+class_name Tomatillo extends CharacterBody2D
+
+@onready var animation_player = $AnimationPlayer
+@onready var sprite_2d = $Sprite2D
+@onready var left_ray_cast_2d = $LeftRayCast2D
+@onready var right_ray_cast_2d = $RightRayCast2D
+@onready var collision_shape_2d = $CollisionShape2D
+@onready var hit_sound = $HitSound
+@onready var down_ray_cast_2d = $DownRayCast2D
+
+# Velocities and speeds
+@export var speed = 60.0
+@export var gravity = 200.0
+@export var static_body_bounce = 300.0
+var death_bounce = 100.0
+var direction = -1
+
+# Boundaries
+@export var death_height = 80
+
+# Flags
+var is_dead = false
+
+# Coin
+@export var coin_spawn_offset = 20.0
+var coin_scene = preload("res://Scenes/coin.tscn")
+
+func _physics_process(delta):
+	if position.y > death_height:
+		queue_free()
+	
+	# Add the gravity
+	velocity.y += gravity * delta
+
+	velocity.x = direction * speed
+	
+	if !is_dead:
+		if left_ray_cast_2d.is_colliding() || right_ray_cast_2d.is_colliding() || (!down_ray_cast_2d.is_colliding() && is_on_floor()):
+			if !(left_ray_cast_2d.get_collider() is Player) || !(right_ray_cast_2d.get_collider() is Player):
+				direction = -direction
+				velocity.x = -sign(velocity.x) * static_body_bounce
+				sprite_2d.flip_h = !sprite_2d.flip_h
+
+	move_and_slide()
+
+func die():
+	hit_sound.play()
+	sprite_2d.flip_v = true
+	is_dead = true
+	collision_shape_2d.queue_free()
+	velocity.y -= death_bounce
+	
+	# Spawn a coin
+	var coin = coin_scene.instantiate()
+	get_parent().get_parent().add_child(coin)
+	coin.position = Vector2(position.x, position.y - coin_spawn_offset)
+	coin.play_animation()

@@ -82,7 +82,7 @@ func _physics_process(delta):
 	var direction = Input.get_axis("move_left", "move_right")
 		
 	# Raycasts
-	if (right_ray_cast_2d.is_colliding() && right_ray_cast_2d.get_collider() is Tomato) || (left_ray_cast_2d.is_colliding() && left_ray_cast_2d.get_collider() is Tomato):
+	if (right_ray_cast_2d.is_colliding() && right_ray_cast_2d.get_collider() is Tomato) || (left_ray_cast_2d.is_colliding() && left_ray_cast_2d.get_collider() is Tomato) || (right_ray_cast_2d.is_colliding() && right_ray_cast_2d.get_collider() is Tomatillo) || (left_ray_cast_2d.is_colliding() && left_ray_cast_2d.get_collider() is Tomatillo):
 		health.reduce_by(1) # take damage
 		got_hit.emit()
 		player_hit_sound.play()
@@ -182,7 +182,7 @@ func _on_downward_area_2d_body_entered(body):
 	if is_dead:
 		return
 		
-	if body is Tomato && !body.is_dead:
+	if (body is Tomato || body is Tomatillo) && !body.is_dead:
 		var tomato = body
 		tomato.die()
 		coin_collected.emit()
