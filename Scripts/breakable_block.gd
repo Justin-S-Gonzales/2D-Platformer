@@ -19,6 +19,7 @@ var rng = RandomNumberGenerator.new()
 
 func _ready():
 	sprite_2d.frame = 0
+	has_content = rng.randi_range(0, 1)
 	
 func play_animation():
 	# Play animation and emit particles

@@ -25,6 +25,8 @@ signal got_hit
 @onready var player_hit_sound = $PlayerHitSound
 @onready var jump_sound = $JumpSound
 
+var rng = RandomNumberGenerator.new()
+
 # Speeds and velocities
 @export var max_walking_speed = 80.0
 @export var max_running_speed = 160.0
@@ -41,9 +43,17 @@ var deceleration = 10.0
 @export var hit_bonk_x_velocity = 300.0
 @export var hit_bonk_y_velocity = -300
 
+# Animation
+enum AnimationState {
+	Idle,
+	Walking,
+	Running,
+	Jumping
+}
+
+var current_animation_state: AnimationState = AnimationState.Idle
+
 # Flags
-var is_jumping = false
-var is_running = false
 var facing_direction = 1
 var can_jump = true
 var is_dead = false
@@ -85,14 +95,9 @@ func _physics_process(delta):
 		else:
 			velocity.x = -sign(velocity.x) * hit_bonk_x_velocity
 		velocity.y = hit_bonk_y_velocity
-		
-	# Handle jump.
-
+	
 	if Input.is_action_pressed(&"jump") && can_jump:
-		jump_sound.play()
 		jump()
-	elif is_on_floor(): 
-		is_jumping = false
 		
 	# This is here to make it that you must re-press the jump button to jump again
 	if is_on_floor() && !Input.is_action_pressed(&"jump"):
@@ -113,10 +118,8 @@ func _physics_process(delta):
 	# Running and walking
 	if Input.is_action_pressed(&"run"):
 		current_max_speed = max_running_speed
-		is_running = true
 	else:
 		current_max_speed = max_walking_speed
-		is_running = false
 	
 	# Apply movement	
 	if direction != 0:
@@ -133,16 +136,32 @@ func _physics_process(delta):
 	
 	sprite_2d.flip_h = facing_direction < 0
 		
-	# Play animations
-	if is_jumping: # Jumping
-		play_jump_animation()
-	elif direction == 0: # Idle
-		play_idle_animation()
-	else: # Running or walking
-		if is_running:
-			animation_player.play(&"run")
+	# Animation states
+	if velocity.y < 0:
+		current_animation_state = AnimationState.Jumping
+		
+	if is_on_floor():
+		current_animation_state = AnimationState.Idle
+	
+	if !(current_animation_state == AnimationState.Jumping):
+		if direction != 0:
+			if Input.is_action_pressed(&"run"):
+				current_animation_state = AnimationState.Running
+			else:
+				current_animation_state = AnimationState.Walking
 		else:
+			current_animation_state = AnimationState.Idle
+		
+	# Play animations
+	match current_animation_state:
+		AnimationState.Idle:
+			play_idle_animation()
+		AnimationState.Walking:
 			animation_player.play(&"walk")
+		AnimationState.Running:
+			animation_player.play(&"run")
+		AnimationState.Jumping:
+			play_jump_animation()
 
 	move_and_slide()
 
@@ -169,9 +188,7 @@ func _on_downward_area_2d_body_entered(body):
 		coin_collected.emit()
 		if !Input.is_action_pressed(&"jump"):
 			velocity.y = upward_bounce_velocity
-			is_jumping = true
 		else:	
-			jump_sound.play()
 			jump()
 
 func _on_upward_area_2d_body_entered(body):
@@ -207,8 +224,9 @@ func get_health():
 func jump():
 	velocity.y = jump_velocity
 	current_gravity = jump_gravity
-	is_jumping = true
 	can_jump = false
+	jump_sound.pitch_scale = 1.0 + rng.randf_range(-1.0, 1.0) * 0.1 # Set pitch to be different every time
+	jump_sound.play()	
 	
 func play_jump_animation():
 	animation_player.stop()
