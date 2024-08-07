@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cfsmscduqdce"]
+[gd_scene load_steps=4 format=3 uid="uid://cfsmscduqdce"]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_52waj"]
 [ext_resource type="FontFile" uid="uid://dqhp0a77k6tow" path="res://Fonts/PixelOperator8.ttf" id="1_g7105"]
+[ext_resource type="FontFile" uid="uid://45u3hyutcdax" path="res://Fonts/PixelOperator8-Bold.ttf" id="3_5qa86"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_52waj")
@@ -11,7 +12,8 @@ offset_left = 24.0
 offset_top = 20.0
 offset_right = 134.0
 offset_bottom = 57.0
-theme_override_fonts/font = ExtResource("1_g7105")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_5qa86")
 theme_override_font_sizes/font_size = 28
 vertical_alignment = 1
 
@@ -20,7 +22,8 @@ offset_left = 273.0
 offset_top = 21.0
 offset_right = 383.0
 offset_bottom = 58.0
-theme_override_fonts/font = ExtResource("1_g7105")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_5qa86")
 theme_override_font_sizes/font_size = 28
 vertical_alignment = 1
 
@@ -29,7 +32,8 @@ offset_left = 520.0
 offset_top = 21.0
 offset_right = 630.0
 offset_bottom = 58.0
-theme_override_fonts/font = ExtResource("1_g7105")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_5qa86")
 theme_override_font_sizes/font_size = 28
 vertical_alignment = 1
 

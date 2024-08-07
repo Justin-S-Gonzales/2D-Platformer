@@ -10,8 +10,12 @@ signal player_respawned
 @onready var start_position = $"Start Position"
 @onready var player = $Player
 @onready var respawn_timer = $RespawnTimer
+@onready var clouds = $ParallaxBackground/Clouds
+
+@export var cloud_movement_speed = 5.0
 
 var respawn_player = true
+var is_game_over = false
 
 var game_over_camera
 
@@ -21,7 +25,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	clouds.motion_offset.x -= cloud_movement_speed * delta
 
 func _on_player_coin_collected():
 	coin_collected.emit()
@@ -62,3 +66,9 @@ func get_player_health():
 
 func _on_player_got_hit():
 	player_got_hit.emit()
+	
+func get_player_position():
+	if respawn_timer.is_stopped() && is_game_over == false:
+		return player.position
+	else:
+		return game_over_camera.position
