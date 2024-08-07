@@ -5,6 +5,7 @@ class_name Tomato extends CharacterBody2D
 @onready var left_ray_cast_2d = $LeftRayCast2D
 @onready var right_ray_cast_2d = $RightRayCast2D
 @onready var collision_shape_2d = $CollisionShape2D
+@onready var hit_sound = $HitSound
 
 # Velocities and speeds
 @export var speed = 60.0
@@ -42,6 +43,7 @@ func _physics_process(delta):
 	move_and_slide()
 
 func die():
+	hit_sound.play()
 	sprite_2d.flip_v = true
 	is_dead = true
 	collision_shape_2d.queue_free()

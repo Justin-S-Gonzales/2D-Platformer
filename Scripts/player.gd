@@ -18,7 +18,12 @@ signal got_hit
 @onready var left_ray_cast_2d = $LeftRayCast2D
 @onready var right_ray_cast_2d = $RightRayCast2D
 
+# Health
 @onready var health = $Health
+
+# Sounds
+@onready var player_hit_sound = $PlayerHitSound
+@onready var jump_sound = $JumpSound
 
 # Speeds and velocities
 @export var max_walking_speed = 80.0
@@ -68,8 +73,9 @@ func _physics_process(delta):
 		
 	# Raycasts
 	if (right_ray_cast_2d.is_colliding() && right_ray_cast_2d.get_collider() is Tomato) || (left_ray_cast_2d.is_colliding() && left_ray_cast_2d.get_collider() is Tomato):
-		health.reduce_by(1)
+		health.reduce_by(1) # take damage
 		got_hit.emit()
+		player_hit_sound.play()
 		if health.get_health() <= 0:
 			die()
 			return
@@ -83,6 +89,7 @@ func _physics_process(delta):
 	# Handle jump.
 
 	if Input.is_action_pressed(&"jump") && can_jump:
+		jump_sound.play()
 		jump()
 	elif is_on_floor(): 
 		is_jumping = false
@@ -164,6 +171,7 @@ func _on_downward_area_2d_body_entered(body):
 			velocity.y = upward_bounce_velocity
 			is_jumping = true
 		else:	
+			jump_sound.play()
 			jump()
 
 func _on_upward_area_2d_body_entered(body):
@@ -181,6 +189,7 @@ func _on_upward_area_2d_body_entered(body):
 	
 	if body is BreakableBlock:
 		var block = body
+		coin_collected.emit()
 		block.play_animation()
 	
 

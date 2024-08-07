@@ -1,38 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://b0gmgnuo2jift"]
+[gd_scene load_steps=12 format=3 uid="uid://b0gmgnuo2jift"]
 
 [ext_resource type="Script" path="res://Scripts/breakable_block.gd" id="1_4t6o4"]
 [ext_resource type="Texture2D" uid="uid://brvm87e282csu" path="res://Sprites/block_break.png" id="1_6rpwn"]
 [ext_resource type="PackedScene" uid="uid://c6jdtypklm3oc" path="res://Scenes/coin.tscn" id="2_febii"]
-
-[sub_resource type="Animation" id="Animation_onxpn"]
-resource_name = "block_break"
-length = 0.3
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [13, 14, 15]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0.3),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"queue_free"
-}]
-}
+[ext_resource type="Texture2D" uid="uid://c1iwy0sxr273u" path="res://Sprites/block_break_particles.png" id="4_15cfe"]
+[ext_resource type="AudioStream" uid="uid://d3uqq6oas3jm0" path="res://Sound Effects/block_break3.wav" id="5_xghg1"]
 
 [sub_resource type="Animation" id="Animation_b72r5"]
 length = 0.001
@@ -49,6 +21,33 @@ tracks/0/keys = {
 "values": [13]
 }
 
+[sub_resource type="Animation" id="Animation_onxpn"]
+resource_name = "block_break"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [13, 14, 15, 12]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
+"values": []
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qvg22"]
 _data = {
 "RESET": SubResource("Animation_b72r5"),
@@ -57,6 +56,27 @@ _data = {
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fwbfr"]
 size = Vector2(16, 16)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_ah1ts"]
+particles_animation = true
+particles_anim_h_frames = 4
+particles_anim_v_frames = 2
+particles_anim_loop = false
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4dcpc"]
+lifetime_randomness = 0.65
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 10.0
+direction = Vector3(0, 0, 0)
+initial_velocity_max = 45.71
+angular_velocity_min = 5.0
+angular_velocity_max = 10.0
+radial_velocity_min = 10.0
+radial_velocity_max = 269.4
+gravity = Vector3(0, 98, 0)
+anim_speed_min = 1.0
+anim_speed_max = 2.0
 
 [node name="BreakableBlock" type="StaticBody2D"]
 script = ExtResource("1_4t6o4")
@@ -76,3 +96,24 @@ libraries = {
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_fwbfr")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_ah1ts")
+emitting = false
+amount = 16
+amount_ratio = 0.75
+process_material = SubResource("ParticleProcessMaterial_4dcpc")
+texture = ExtResource("4_15cfe")
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+
+[node name="BlockBreakSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_xghg1")
+pitch_scale = 0.75
+
+[node name="DespawnTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="DespawnTimer" to="." method="_on_despawn_timer_timeout"]

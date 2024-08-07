@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://ddlxr0mbji4rf"]
+[gd_scene load_steps=8 format=3 uid="uid://ddlxr0mbji4rf"]
 
 [ext_resource type="Script" path="res://Scripts/tomato.gd" id="1_2ndlc"]
 [ext_resource type="Texture2D" uid="uid://bwv6vbv8xepb3" path="res://Sprites/tomato_guy_sheet.png" id="1_4ld1i"]
+[ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="3_y46o1"]
 
 [sub_resource type="Animation" id="Animation_bnnlf"]
 length = 0.001
@@ -80,3 +81,7 @@ target_position = Vector2(11, 0)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_v5jtf")
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_y46o1")
+pitch_scale = 1.4
