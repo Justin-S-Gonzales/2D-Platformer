@@ -17,6 +17,7 @@ signal got_hit
 @onready var downward_area_2d = $DownwardArea2D
 @onready var left_ray_cast_2d = $LeftRayCast2D
 @onready var right_ray_cast_2d = $RightRayCast2D
+@onready var down_ray_cast_2d = $DownRayCast2D
 
 # Health
 @onready var health = $Health
@@ -35,6 +36,8 @@ var current_max_speed = 0.0
 @export var acceleration = 5.0
 var deceleration = 10.0
 
+var direction = 0
+
 # Bounces and jumps
 @export var jump_velocity = -350.0
 @export var downward_bonk_velocity = 400.0
@@ -42,6 +45,10 @@ var deceleration = 10.0
 @export var death_bounce = 100.0
 @export var hit_bonk_x_velocity = 300.0
 @export var hit_bonk_y_velocity = -300
+
+# Coyote time
+@export var coyoteTime = 0.05
+var coyoteTimeCounter = 0
 
 # Animation
 enum AnimationState {
@@ -79,29 +86,21 @@ func _physics_process(delta):
 		return
 	
 	# Get the input direction
-	var direction = Input.get_axis("move_left", "move_right")
-		
-	# Raycasts
-	if (right_ray_cast_2d.is_colliding() && right_ray_cast_2d.get_collider() is Tomato) || (left_ray_cast_2d.is_colliding() && left_ray_cast_2d.get_collider() is Tomato) || (right_ray_cast_2d.is_colliding() && right_ray_cast_2d.get_collider() is Tomatillo) || (left_ray_cast_2d.is_colliding() && left_ray_cast_2d.get_collider() is Tomatillo):
-		health.reduce_by(1) # take damage
-		got_hit.emit()
-		player_hit_sound.play()
-		if health.get_health() <= 0:
-			die()
-			return
-		
-		if direction == 0:
-			velocity.x = hit_bonk_x_velocity
-		else:
-			velocity.x = -sign(velocity.x) * hit_bonk_x_velocity
-		velocity.y = hit_bonk_y_velocity
+	direction = Input.get_axis("move_left", "move_right")
 	
-	if Input.is_action_pressed(&"jump") && can_jump:
+	if Input.is_action_pressed(&"jump") && can_jump && coyoteTimeCounter > 0:
 		jump()
+		coyoteTimeCounter = 0
 		
 	# This is here to make it that you must re-press the jump button to jump again
-	if is_on_floor() && !Input.is_action_pressed(&"jump"):
+	# if is_on_floor() && !Input.is_action_pressed(&"jump"):
+	
+	if !Input.is_action_pressed(&"jump") && is_on_floor() && !(down_ray_cast_2d.is_colliding() && down_ray_cast_2d.get_collider() is Tomato || down_ray_cast_2d.get_collider() is Tomatillo):
 		can_jump = true
+		coyoteTimeCounter = coyoteTime
+	
+	if !is_on_floor():
+		coyoteTimeCounter -= delta
 		
 	# To apply normal gravity when jump button is not pressed
 	if !Input.is_action_pressed(&"jump"):
@@ -111,9 +110,11 @@ func _physics_process(delta):
 	# This is to prevent player being able to "float" while holding the jump button
 	if velocity.y > 0:
 		current_gravity = full_gravity
-	
+		jump_sound.stop()
+		
 	# Apply gravity
-	velocity.y += current_gravity * delta
+	if coyoteTimeCounter <= 0:
+		velocity.y += current_gravity * delta
 	
 	# Running and walking
 	if Input.is_action_pressed(&"run"):
@@ -177,6 +178,26 @@ func _on_body_area_2d_area_entered(area):
 		var coin = area as Coin
 		area.play_animation()
 		coin_collected.emit()
+	
+func _on_body_area_2d_body_entered(body):
+	if is_dead:
+		return
+	
+	if body is Tomato || body is Tomatillo:
+		health.reduce_by(1) # take damage
+		got_hit.emit()
+		player_hit_sound.play()
+		if health.get_health() <= 0:
+			die()
+			return
+		
+		if direction == 0:
+			velocity.x = hit_bonk_x_velocity
+		else:
+			velocity.x = -sign(velocity.x) * hit_bonk_x_velocity
+		velocity.y = hit_bonk_y_velocity
+		
+		coyoteTimeCounter = 0
 		
 func _on_downward_area_2d_body_entered(body):
 	if is_dead:
@@ -211,6 +232,8 @@ func _on_upward_area_2d_body_entered(body):
 	
 
 func die():
+	if is_dead:
+		return 
 	sprite_2d.flip_v = true
 	is_dead = true
 	collision_shape_2d.queue_free()
@@ -235,3 +258,4 @@ func play_jump_animation():
 func play_idle_animation():
 	animation_player.stop()
 	sprite_2d.frame = 1
+

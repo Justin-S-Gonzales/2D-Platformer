@@ -105,13 +105,8 @@ limit_bottom = 80
 position_smoothing_enabled = true
 position_smoothing_speed = 15.0
 
-[node name="RightRayCast2D" type="RayCast2D" parent="."]
-position = Vector2(0, 2)
-target_position = Vector2(9, 0)
-
-[node name="LeftRayCast2D" type="RayCast2D" parent="."]
-position = Vector2(0, 2)
-target_position = Vector2(-8, 0)
+[node name="DownRayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(0, 10)
 
 [node name="BodyArea2D" type="Area2D" parent="."]
 visible = false
@@ -143,5 +138,6 @@ stream = ExtResource("5_3x572")
 volume_db = -10.0
 
 [connection signal="area_entered" from="BodyArea2D" to="." method="_on_body_area_2d_area_entered"]
+[connection signal="body_entered" from="BodyArea2D" to="." method="_on_body_area_2d_body_entered"]
 [connection signal="body_entered" from="DownwardArea2D" to="." method="_on_downward_area_2d_body_entered"]
 [connection signal="body_entered" from="UpwardArea2D" to="." method="_on_upward_area_2d_body_entered"]
