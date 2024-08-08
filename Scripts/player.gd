@@ -94,8 +94,7 @@ func _physics_process(delta):
 		
 	# This is here to make it that you must re-press the jump button to jump again
 	# if is_on_floor() && !Input.is_action_pressed(&"jump"):
-	
-	if !Input.is_action_pressed(&"jump") && is_on_floor() && !(down_ray_cast_2d.is_colliding() && down_ray_cast_2d.get_collider() is Tomato || down_ray_cast_2d.get_collider() is Tomatillo):
+	if !Input.is_action_pressed(&"jump") && is_on_floor() && !(down_ray_cast_2d.is_colliding() && isEnemy(down_ray_cast_2d.get_collider())):
 		can_jump = true
 		coyoteTimeCounter = coyoteTime
 	
@@ -259,3 +258,10 @@ func play_idle_animation():
 	animation_player.stop()
 	sprite_2d.frame = 1
 
+func isEnemy(object):
+	if object is Tomato:
+		return true
+	elif object is Tomatillo:
+		return true
+	else:
+		return false
