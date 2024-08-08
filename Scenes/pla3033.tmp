@@ -1,0 +1,143 @@
+[gd_scene load_steps=14 format=3 uid="uid://8nf3yomfq2v3"]
+
+[ext_resource type="Texture2D" uid="uid://c4n6b8gjilxls" path="res://Sprites/orange_boy_sprite_sheet.png" id="1_p6tfg"]
+[ext_resource type="Script" path="res://Scripts/player.gd" id="1_weqlp"]
+[ext_resource type="PackedScene" uid="uid://clkixx41haij8" path="res://Scenes/health.tscn" id="3_k18on"]
+[ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="4_cqvxm"]
+[ext_resource type="AudioStream" uid="uid://cynf3534tte1h" path="res://Sound Effects/jump.wav" id="5_3x572"]
+
+[sub_resource type="Animation" id="Animation_81qa2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_jq7dj"]
+resource_name = "run"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 1]
+}
+
+[sub_resource type="Animation" id="Animation_cnxwg"]
+resource_name = "walk"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [2, 1, 0, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_sab3l"]
+_data = {
+"RESET": SubResource("Animation_81qa2"),
+"run": SubResource("Animation_jq7dj"),
+"walk": SubResource("Animation_cnxwg")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qbebo"]
+size = Vector2(11, 11)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3r6sm"]
+size = Vector2(16, 15)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nt2gy"]
+size = Vector2(11, 4)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ljvvv"]
+size = Vector2(8, 5)
+
+[node name="Player" type="CharacterBody2D"]
+z_index = 5
+collision_layer = 2
+script = ExtResource("1_weqlp")
+max_running_speed = 200.0
+jump_velocity = -300.0
+upward_bounce_velocity = -300.0
+jump_gravity = 650
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_p6tfg")
+hframes = 4
+frame = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_sab3l")
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2.5)
+shape = SubResource("RectangleShape2D_qbebo")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(4, 4)
+process_callback = 0
+limit_left = -144
+limit_bottom = 80
+position_smoothing_enabled = true
+position_smoothing_speed = 15.0
+
+[node name="DownRayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(0, 10)
+
+[node name="BodyArea2D" type="Area2D" parent="."]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BodyArea2D"]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_3r6sm")
+
+[node name="DownwardArea2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DownwardArea2D"]
+position = Vector2(0, 8)
+shape = SubResource("RectangleShape2D_nt2gy")
+
+[node name="UpwardArea2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpwardArea2D"]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_ljvvv")
+
+[node name="Health" parent="." instance=ExtResource("3_k18on")]
+_health = 2
+
+[node name="PlayerHitSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_cqvxm")
+
+[node name="JumpSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_3x572")
+volume_db = -10.0
+
+[connection signal="area_entered" from="BodyArea2D" to="." method="_on_body_area_2d_area_entered"]
+[connection signal="body_entered" from="BodyArea2D" to="." method="_on_body_area_2d_body_entered"]
+[connection signal="body_entered" from="DownwardArea2D" to="." method="_on_downward_area_2d_body_entered"]
+[connection signal="body_entered" from="UpwardArea2D" to="." method="_on_upward_area_2d_body_entered"]

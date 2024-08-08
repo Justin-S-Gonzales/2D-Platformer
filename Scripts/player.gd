@@ -15,8 +15,6 @@ signal got_hit
 @onready var collision_shape_2d = $CollisionShape2D
 @onready var body_area_2d = $BodyArea2D
 @onready var downward_area_2d = $DownwardArea2D
-@onready var left_ray_cast_2d = $LeftRayCast2D
-@onready var right_ray_cast_2d = $RightRayCast2D
 @onready var down_ray_cast_2d = $DownRayCast2D
 
 # Health
@@ -49,6 +47,8 @@ var direction = 0
 # Coyote time
 @export var coyoteTime = 0.05
 var coyoteTimeCounter = 0
+@export var jumpBufferTime = 0.18
+var jumpBufferCounter = 0
 
 # Animation
 enum AnimationState {
@@ -62,13 +62,13 @@ var current_animation_state: AnimationState = AnimationState.Idle
 
 # Flags
 var facing_direction = 1
-var can_jump = true
 var is_dead = false
 
 # Gravity
 @export var full_gravity = 2000.0
 @export var jump_gravity = 800
 var death_gravity = 200
+var death_x_velocity = 100
 var current_gravity = full_gravity
 
 # Boundaries
@@ -82,25 +82,28 @@ func _physics_process(delta):
 		
 	if is_dead:
 		velocity.y += current_gravity * delta
+		velocity.x = death_x_velocity
 		move_and_slide()
 		return
 	
 	# Get the input direction
 	direction = Input.get_axis("move_left", "move_right")
 	
-	if Input.is_action_pressed(&"jump") && can_jump && coyoteTimeCounter > 0:
+	# Jump buffer
+	if Input.is_action_just_pressed(&"jump"):
+		jumpBufferCounter = jumpBufferTime
+	else:
+		jumpBufferCounter -= delta		
+	
+	if jumpBufferCounter > 0 && coyoteTimeCounter > 0:
 		jump()
-		coyoteTimeCounter = 0
 		
 	# This is here to make it that you must re-press the jump button to jump again
-	# if is_on_floor() && !Input.is_action_pressed(&"jump"):
-	if !Input.is_action_pressed(&"jump") && is_on_floor() && !(down_ray_cast_2d.is_colliding() && isEnemy(down_ray_cast_2d.get_collider())):
-		can_jump = true
+	if is_on_floor(): 
 		coyoteTimeCounter = coyoteTime
-	
-	if !is_on_floor():
+	else:
 		coyoteTimeCounter -= delta
-		
+	
 	# To apply normal gravity when jump button is not pressed
 	if !Input.is_action_pressed(&"jump"):
 		current_gravity = full_gravity
@@ -202,7 +205,7 @@ func _on_downward_area_2d_body_entered(body):
 	if is_dead:
 		return
 		
-	if (body is Tomato || body is Tomatillo) && !body.is_dead:
+	if isEnemy(body) && !body.is_dead:
 		var tomato = body
 		tomato.die()
 		coin_collected.emit()
@@ -226,9 +229,9 @@ func _on_upward_area_2d_body_entered(body):
 	
 	if body is BreakableBlock:
 		var block = body
-		coin_collected.emit()
 		block.play_animation()
-	
+		if block.has_content:
+			coin_collected.emit()
 
 func die():
 	if is_dead:
@@ -238,6 +241,7 @@ func die():
 	collision_shape_2d.queue_free()
 	velocity.y = -death_bounce
 	current_gravity = death_gravity
+	death_x_velocity = velocity.x
 
 func get_health():
 	health.get_health()
@@ -246,9 +250,10 @@ func get_health():
 func jump():
 	velocity.y = jump_velocity
 	current_gravity = jump_gravity
-	can_jump = false
 	jump_sound.pitch_scale = 1.0 + rng.randf_range(-1.0, 1.0) * 0.1 # Set pitch to be different every time
 	jump_sound.play()	
+	coyoteTimeCounter = 0
+	jumpBufferCounter = 0
 	
 func play_jump_animation():
 	animation_player.stop()
