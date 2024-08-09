@@ -26,11 +26,13 @@ func play_animation():
 				up_shape_cast_2d.get_collider(n).die()
 	
 	if content_amount <= 0:
+		animation_player.stop()
 		animation_player.play(&"hit_without_content")
 		block_hit_sound.pitch_scale = 1.0 + rng.randf_range(-3.0, 3.0) * 0.1 # Set pitch to be different every time
 		block_hit_sound.play()	
 		return
 		
+	animation_player.stop()
 	animation_player.play(&"hit")
 	create_content()
 	if content is Coin:

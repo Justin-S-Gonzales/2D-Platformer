@@ -180,32 +180,22 @@ func _on_body_area_2d_area_entered(area):
 		var coin = area as Coin
 		area.play_animation()
 		coin_collected.emit()
+		
+	if is_enemy(area.get_parent()):
+		take_damage()
 	
 func _on_body_area_2d_body_entered(body):
 	if is_dead:
 		return
 	
-	if body is Tomato || body is Tomatillo:
-		health.reduce_by(1) # take damage
-		got_hit.emit()
-		player_hit_sound.play()
-		if health.get_health() <= 0:
-			die()
-			return
-		
-		if direction == 0:
-			velocity.x = hit_bonk_x_velocity
-		else:
-			velocity.x = -sign(velocity.x) * hit_bonk_x_velocity
-		velocity.y = hit_bonk_y_velocity
-		
-		coyoteTimeCounter = 0
+	if is_enemy(body):
+		take_damage()
 		
 func _on_downward_area_2d_body_entered(body):
 	if is_dead:
 		return
 		
-	if isEnemy(body) && !body.is_dead:
+	if is_enemy(body) && !body.is_dead:
 		var tomato = body
 		tomato.die()
 		coin_collected.emit()
@@ -263,10 +253,26 @@ func play_idle_animation():
 	animation_player.stop()
 	sprite_2d.frame = 1
 
-func isEnemy(object):
+func is_enemy(object):
 	if object is Tomato:
 		return true
 	elif object is Tomatillo:
 		return true
+	elif object is Sunflower:
+		return true
 	else:
 		return false
+		
+func take_damage():
+	health.reduce_by(1) # take damage
+	got_hit.emit()
+	player_hit_sound.play()
+	if health.get_health() <= 0:
+		die()
+		return
+	
+	if direction == 0:
+		velocity.x = hit_bonk_x_velocity
+	else:
+		velocity.x = -sign(velocity.x) * hit_bonk_x_velocity
+	velocity.y = hit_bonk_y_velocity

@@ -15,6 +15,7 @@ offset_bottom = 57.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_5qa86")
 theme_override_font_sizes/font_size = 28
+text = "Lives"
 vertical_alignment = 1
 
 [node name="CoinLabel" type="Label" parent="."]
@@ -25,16 +26,18 @@ offset_bottom = 58.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_5qa86")
 theme_override_font_sizes/font_size = 28
+text = "Coins"
 vertical_alignment = 1
 
 [node name="HealthLabel" type="Label" parent="."]
-offset_left = 520.0
+offset_left = 518.0
 offset_top = 21.0
-offset_right = 630.0
+offset_right = 676.0
 offset_bottom = 58.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_5qa86")
 theme_override_font_sizes/font_size = 28
+text = "Health"
 vertical_alignment = 1
 
 [node name="Game Over Text" type="Label" parent="."]
