@@ -15,7 +15,7 @@ enum State {
 	Hidden
 }
 
-var numStates: int = 5
+var numStates: int = 4
 
 var current_state: State = State.ComingOut
 
@@ -50,19 +50,19 @@ func _process(delta):
 func set_play_false():
 	play = false
 
-func loopState():
+func loop_state():
 	current_state = (current_state + 1) % numStates	
 
 func _on_set_state_timeout():
 	play = true
-	loopState()
+	loop_state()
 	if current_state == State.Attacking:
 		init_attack_timer.start()
 	else:
 		set_state_timer.start()
 
 func _on_init_attack_timer_timeout():
-	loopState()
+	loop_state()
 	set_state_timer.start()
 	
 func disable_attack_area():

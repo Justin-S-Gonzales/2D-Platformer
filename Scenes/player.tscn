@@ -72,7 +72,7 @@ size = Vector2(16, 15)
 size = Vector2(11, 4)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ljvvv"]
-size = Vector2(8, 5)
+size = Vector2(10, 5.75)
 
 [node name="Player" type="CharacterBody2D"]
 z_index = 5
@@ -124,7 +124,7 @@ shape = SubResource("RectangleShape2D_nt2gy")
 [node name="UpwardArea2D" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="UpwardArea2D"]
-position = Vector2(0, -3)
+position = Vector2(0, -4.125)
 shape = SubResource("RectangleShape2D_ljvvv")
 
 [node name="Health" parent="." instance=ExtResource("3_k18on")]
@@ -139,5 +139,6 @@ volume_db = -10.0
 
 [connection signal="area_entered" from="BodyArea2D" to="." method="_on_body_area_2d_area_entered"]
 [connection signal="body_entered" from="BodyArea2D" to="." method="_on_body_area_2d_body_entered"]
+[connection signal="area_entered" from="DownwardArea2D" to="." method="_on_downward_area_2d_area_entered"]
 [connection signal="body_entered" from="DownwardArea2D" to="." method="_on_downward_area_2d_body_entered"]
 [connection signal="body_entered" from="UpwardArea2D" to="." method="_on_upward_area_2d_body_entered"]

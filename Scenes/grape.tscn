@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://bo7f8f6spdim2"]
+
+[ext_resource type="Script" path="res://Scripts/grape.gd" id="1_8utl1"]
+[ext_resource type="Texture2D" uid="uid://d2br2k64t4w6b" path="res://Sprites/grapes_sprite_sheet.png" id="1_kcny0"]
+[ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="3_vqlg2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mgrgy"]
+size = Vector2(8, 8)
+
+[node name="Grape" type="RigidBody2D"]
+collision_mask = 2
+gravity_scale = 0.2
+linear_velocity = Vector2(-100, -100)
+script = ExtResource("1_8utl1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -8)
+texture = ExtResource("1_kcny0")
+hframes = 10
+vframes = 3
+frame = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_mgrgy")
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_vqlg2")
+pitch_scale = 1.6

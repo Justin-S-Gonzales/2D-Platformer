@@ -1,0 +1,165 @@
+[gd_scene load_steps=14 format=3 uid="uid://cdycucqchewc"]
+
+[ext_resource type="Script" path="res://Scripts/grapes.gd" id="1_8hwwb"]
+[ext_resource type="Texture2D" uid="uid://d2br2k64t4w6b" path="res://Sprites/grapes_sprite_sheet.png" id="1_dlacv"]
+[ext_resource type="Script" path="res://Scripts/GrapesHitbox.gd" id="3_7ljrs"]
+[ext_resource type="Script" path="res://Scripts/GrapesGroundDetector.gd" id="3_83fx5"]
+[ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="3_sc278"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3ceql"]
+size = Vector2(12, 20)
+
+[sub_resource type="Animation" id="Animation_33f3h"]
+resource_name = "idle"
+length = 0.7
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6]
+}
+
+[sub_resource type="Animation" id="Animation_g5cds"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_7hqhs"]
+resource_name = "jump"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [10, 11, 12, 13, 14]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"set_play_false"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_b4ueh"]
+resource_name = "throw"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.7, 1),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"spawn_grape"
+}, {
+"args": [],
+"method": &"set_play_false"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kemyw"]
+_data = {
+"RESET": SubResource("Animation_g5cds"),
+"idle": SubResource("Animation_33f3h"),
+"jump": SubResource("Animation_7hqhs"),
+"throw": SubResource("Animation_b4ueh")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gttoi"]
+size = Vector2(17, 13)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gkxkx"]
+size = Vector2(12, 11)
+
+[node name="Grapes" type="CharacterBody2D"]
+position = Vector2(0, -8)
+script = ExtResource("1_8hwwb")
+full_vertical_jump_velocity = -165.0
+short_vertical_jump_velocity = -30.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_3ceql")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_dlacv")
+hframes = 10
+vframes = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_kemyw")
+}
+
+[node name="ChangeStateTimer" type="Timer" parent="."]
+autostart = true
+
+[node name="GroundDetector" type="Area2D" parent="."]
+script = ExtResource("3_83fx5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundDetector"]
+position = Vector2(0, 26)
+shape = SubResource("RectangleShape2D_gttoi")
+
+[node name="Hitbox" type="Area2D" parent="."]
+script = ExtResource("3_7ljrs")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_gkxkx")
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_sc278")
+pitch_scale = 1.4
+
+[node name="GrapeSpawnPoint" type="Marker2D" parent="."]
+position = Vector2(-8, 1)
+
+[connection signal="timeout" from="ChangeStateTimer" to="." method="_on_change_state_timer_timeout"]
+[connection signal="body_entered" from="GroundDetector" to="." method="_on_area_2d_body_entered"]

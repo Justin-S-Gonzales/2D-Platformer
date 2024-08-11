@@ -180,8 +180,10 @@ func _on_body_area_2d_area_entered(area):
 		var coin = area as Coin
 		area.play_animation()
 		coin_collected.emit()
-		
-	if is_enemy(area.get_parent()):
+	
+	if is_enemy(area.get_parent()) && !(area is GrapesGroundDetector):
+		if area.get_parent().is_dead:
+			return
 		take_damage()
 	
 func _on_body_area_2d_body_entered(body):
@@ -189,6 +191,8 @@ func _on_body_area_2d_body_entered(body):
 		return
 	
 	if is_enemy(body):
+		if body.is_dead:
+			return
 		take_damage()
 		
 func _on_downward_area_2d_body_entered(body):
@@ -196,9 +200,22 @@ func _on_downward_area_2d_body_entered(body):
 		return
 		
 	if is_enemy(body) && !body.is_dead:
-		var tomato = body
-		tomato.die()
-		coin_collected.emit()
+		bounce_off_enemy(body)
+			
+
+func _on_downward_area_2d_area_entered(area):
+	if is_dead:
+		return
+		
+	if is_enemy(area.get_parent()) && !area.get_parent().is_dead && !(area is GrapesGroundDetector):
+		bounce_off_enemy(area.get_parent())
+			
+func bounce_off_enemy(enemy):
+		enemy.die()
+		
+		if !(enemy is Grape):
+			coin_collected.emit()
+			
 		if !Input.is_action_pressed(&"jump"):
 			velocity.y = upward_bounce_velocity
 		else:	
@@ -259,6 +276,10 @@ func is_enemy(object):
 	elif object is Tomatillo:
 		return true
 	elif object is Sunflower:
+		return true
+	elif object is Grapes:
+		return true
+	elif object is Grape:
 		return true
 	else:
 		return false

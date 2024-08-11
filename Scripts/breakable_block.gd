@@ -43,9 +43,9 @@ func play_animation():
 			content.play_animation()
 			
 	# Kill enemies above
-	if up_shape_cast_2d.is_colliding() && up_shape_cast_2d.get_collider(0) is Tomato || up_shape_cast_2d.get_collider(0) is Tomatillo:
+	if up_shape_cast_2d.is_colliding() && up_shape_cast_2d.get_collider(0) is Tomato || up_shape_cast_2d.get_collider(0) is Tomatillo || up_shape_cast_2d.get_collider(0) is Grapes:
 		for n in range(up_shape_cast_2d.get_collision_count()):
-			if up_shape_cast_2d.get_collider(n) is Tomato || up_shape_cast_2d.get_collider(n) is Tomatillo:
+			if up_shape_cast_2d.get_collider(n) is Tomato || up_shape_cast_2d.get_collider(n) is Tomatillo || up_shape_cast_2d.get_collider(n) is Grapes:
 				up_shape_cast_2d.get_collider(n).die()
 		
 	collision_shape_2d.queue_free()
