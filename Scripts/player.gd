@@ -193,7 +193,11 @@ func _on_body_area_2d_body_entered(body):
 	if is_enemy(body):
 		if body.is_dead:
 			return
+			
 		take_damage()
+		
+		if body is Grape:
+			body.collision_shape_2d.set_deferred("disabled", true)
 		
 func _on_downward_area_2d_body_entered(body):
 	if is_dead:
@@ -201,7 +205,7 @@ func _on_downward_area_2d_body_entered(body):
 		
 	if is_enemy(body) && !body.is_dead:
 		bounce_off_enemy(body)
-			
+		
 
 func _on_downward_area_2d_area_entered(area):
 	if is_dead:
