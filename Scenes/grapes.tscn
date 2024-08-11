@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://cdycucqchewc"]
+[gd_scene load_steps=16 format=3 uid="uid://cdycucqchewc"]
 
 [ext_resource type="Script" path="res://Scripts/grapes.gd" id="1_8hwwb"]
 [ext_resource type="Texture2D" uid="uid://d2br2k64t4w6b" path="res://Sprites/grapes_sprite_sheet.png" id="1_dlacv"]
 [ext_resource type="Script" path="res://Scripts/GrapesHitbox.gd" id="3_7ljrs"]
 [ext_resource type="Script" path="res://Scripts/GrapesGroundDetector.gd" id="3_83fx5"]
 [ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="3_sc278"]
+[ext_resource type="Script" path="res://Scripts/PlayerDetectionArea.gd" id="6_nlouv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3ceql"]
 size = Vector2(12, 20)
@@ -117,6 +118,9 @@ size = Vector2(17, 13)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gkxkx"]
 size = Vector2(12, 11)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_qa0j8"]
+radius = 104.005
+
 [node name="Grapes" type="CharacterBody2D"]
 position = Vector2(0, -8)
 script = ExtResource("1_8hwwb")
@@ -161,5 +165,15 @@ pitch_scale = 1.4
 [node name="GrapeSpawnPoint" type="Marker2D" parent="."]
 position = Vector2(-8, 1)
 
+[node name="PlayerDetectionArea" type="Area2D" parent="."]
+collision_mask = 2
+script = ExtResource("6_nlouv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetectionArea"]
+position = Vector2(0, 8)
+shape = SubResource("CircleShape2D_qa0j8")
+
 [connection signal="timeout" from="ChangeStateTimer" to="." method="_on_change_state_timer_timeout"]
 [connection signal="body_entered" from="GroundDetector" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="PlayerDetectionArea" to="." method="_on_player_detection_area_body_entered"]
+[connection signal="body_exited" from="PlayerDetectionArea" to="." method="_on_player_detection_area_body_exited"]

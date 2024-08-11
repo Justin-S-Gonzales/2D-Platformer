@@ -15,7 +15,8 @@ signal got_hit
 @onready var collision_shape_2d = $CollisionShape2D
 @onready var body_area_2d = $BodyArea2D
 @onready var downward_area_2d = $DownwardArea2D
-@onready var down_ray_cast_2d = $DownRayCast2D
+@onready var upward_area_2d = $UpwardArea2D
+@onready var reactivate_collision_timer = $ReactivateCollisionTimer
 
 # Health
 @onready var health = $Health
@@ -181,9 +182,7 @@ func _on_body_area_2d_area_entered(area):
 		area.play_animation()
 		coin_collected.emit()
 	
-	if is_enemy(area.get_parent()) && !(area is GrapesGroundDetector):
-		if area.get_parent().is_dead:
-			return
+	if is_enemy(area.get_parent()) && (area.get_parent() is Sunflower):
 		take_damage()
 	
 func _on_body_area_2d_body_entered(body):
@@ -195,6 +194,9 @@ func _on_body_area_2d_body_entered(body):
 			return
 			
 		take_damage()
+		
+		if !is_dead:
+			position.x -= direction * 20.0 if direction != 0 else 20.0
 		
 		if body is Grape:
 			body.collision_shape_2d.set_deferred("disabled", true)
@@ -211,7 +213,7 @@ func _on_downward_area_2d_area_entered(area):
 	if is_dead:
 		return
 		
-	if is_enemy(area.get_parent()) && !area.get_parent().is_dead && !(area is GrapesGroundDetector):
+	if is_enemy(area.get_parent()) && !area.get_parent().is_dead && !(area is GrapesGroundDetector || area is PlayerDetectionArea):
 		bounce_off_enemy(area.get_parent())
 			
 func bounce_off_enemy(enemy):
@@ -297,7 +299,7 @@ func take_damage():
 		return
 	
 	if direction == 0:
-		velocity.x = hit_bonk_x_velocity
+		velocity.x = -hit_bonk_x_velocity
 	else:
 		velocity.x = -sign(velocity.x) * hit_bonk_x_velocity
 	velocity.y = hit_bonk_y_velocity

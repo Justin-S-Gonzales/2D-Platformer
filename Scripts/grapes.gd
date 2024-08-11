@@ -7,15 +7,22 @@ class_name Grapes
 @onready var collision_shape_2d = $CollisionShape2D
 @onready var hit_sound = $HitSound
 @onready var grape_spawn_point = $GrapeSpawnPoint
+@onready var player_detection_area = $PlayerDetectionArea
 
-@export var max_speed = 300.0
+# Velocities
 @export var full_vertical_jump_velocity = -180.0
 @export var short_vertical_jump_velocity = -10.0
 var is_full_vertical_jump_velocity = true
 
-@export var coin_spawn_offset = 20.0
-var coin_scene = preload("res://Scenes/coin.tscn")
+@export var grape_x_velocity_absolute = 100
+var grape_x_velocity = -100
 
+# Positions
+@export var coin_spawn_offset: float = 20.0
+var start_grape_spawn_point_position: Vector2
+
+# Scenes
+var coin_scene = preload("res://Scenes/coin.tscn")
 var grape_scene = preload("res://Scenes/grape.tscn")
 
 var death_bounce = 100.0
@@ -42,6 +49,11 @@ var current_state: State = State.Idle
 var play: bool = true
 
 var rng = RandomNumberGenerator.new()
+
+var player: CharacterBody2D = null
+
+func _ready():
+	start_grape_spawn_point_position = grape_spawn_point.position
 
 func _physics_process(delta):
 	if position.y > death_height:
@@ -89,6 +101,16 @@ func _physics_process(delta):
 					sprite_2d.frame = 0
 			State.Throwing:
 				sprite_2d.frame = 29
+				
+	if player != null:
+		if player.position.x > position.x:
+			sprite_2d.flip_h = true
+			grape_spawn_point.position.x = -start_grape_spawn_point_position.x
+			grape_x_velocity = grape_x_velocity_absolute
+		else:
+			sprite_2d.flip_h = false
+			grape_spawn_point.position.x = start_grape_spawn_point_position.x
+			grape_x_velocity = -grape_x_velocity_absolute
 
 func loop_state():
 	current_state = (current_state + 1) % numStates	
@@ -107,7 +129,7 @@ func _on_change_state_timer_timeout():
 		State.Jumping:
 			if position.y < 0:
 				velocity.y = full_vertical_jump_velocity if is_full_vertical_jump_velocity else short_vertical_jump_velocity
-				is_full_vertical_jump_velocity = true if rng.randi_range(0, 3) == 1 else false
+				is_full_vertical_jump_velocity = true if rng.randi_range(0, 5) == 1 else false
 			else:
 				velocity.y = full_vertical_jump_velocity
 			if is_on_floor():
@@ -145,3 +167,12 @@ func spawn_grape():
 	var grape = grape_scene.instantiate()
 	get_parent().get_parent().add_child(grape)
 	grape.position = position + grape_spawn_point.position
+	grape.linear_velocity.x = grape_x_velocity
+
+func _on_player_detection_area_body_entered(body):
+	if body is Player:
+		player = body
+
+func _on_player_detection_area_body_exited(body):
+	if body is Player:
+		player = null

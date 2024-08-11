@@ -5,7 +5,14 @@ class_name Grape
 @onready var hit_sound = $HitSound
 @onready var collision_shape_2d = $CollisionShape2D
 
+# Boundaries
+@export var death_height = 80
+
 var is_dead = false
+
+func _process(delta: float) -> void:
+	if position.y > death_height:
+		queue_free()
 
 func die():
 	hit_sound.play()
