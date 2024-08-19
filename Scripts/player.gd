@@ -286,6 +286,8 @@ func is_enemy(object):
 		return true
 	elif object is Grape:
 		return true
+	elif object is GreenGrapes:
+		return true
 	elif object is GreenGrape:
 		return true
 	else:

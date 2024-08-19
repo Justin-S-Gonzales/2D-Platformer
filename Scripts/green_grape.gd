@@ -19,3 +19,6 @@ func die():
 	collision_shape_2d.set_deferred("disabled", true)
 	linear_velocity.x = 0
 	gravity_scale = 0.4
+
+func _on_visible_on_screen_notifier_2d_screen_exited():
+	queue_free()

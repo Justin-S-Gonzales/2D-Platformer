@@ -124,7 +124,7 @@ radius = 104.005
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qcdq0"]
 size = Vector2(12, 10)
 
-[node name="Grapes" type="CharacterBody2D"]
+[node name="GreenGrapes" type="CharacterBody2D"]
 position = Vector2(0, -8)
 script = ExtResource("1_ybwen")
 
