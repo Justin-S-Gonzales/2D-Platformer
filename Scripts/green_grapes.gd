@@ -32,6 +32,7 @@ var death_bounce = 100.0
 # Flags
 var is_dead = false
 var should_jump: bool = true
+var attack: bool = false
 
 # Boundaries
 @export var death_height = 80
@@ -161,6 +162,9 @@ func die():
 	animation_player.stop()
 
 func spawn_grape():
+	if !attack:
+		return 
+		
 	var grape = grape_scene.instantiate()
 	get_parent().get_parent().add_child(grape)
 	grape.position = position + grape_spawn_point.position
@@ -173,3 +177,9 @@ func _on_player_detection_area_body_entered(body):
 func _on_player_detection_area_body_exited(body):
 	if body is Player:
 		player = null
+
+func _on_visible_on_screen_notifier_2d_screen_exited():
+	attack = false
+
+func _on_visible_on_screen_notifier_2d_screen_entered():
+	attack = true

@@ -306,7 +306,7 @@ size = Vector2(50, 441)
 script = ExtResource("1_4h808")
 
 [node name="Player" parent="." instance=ExtResource("1_xv6u5")]
-position = Vector2(2193, -4)
+position = Vector2(-104, -4)
 
 [node name="ForegroundTileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_0yqxh")
