@@ -16,7 +16,6 @@ signal got_hit
 @onready var body_area_2d = $BodyArea2D
 @onready var downward_area_2d = $DownwardArea2D
 @onready var upward_area_2d = $UpwardArea2D
-@onready var reactivate_collision_timer = $ReactivateCollisionTimer
 
 # Health
 @onready var health = $Health
@@ -195,9 +194,6 @@ func _on_body_area_2d_body_entered(body):
 			
 		take_damage()
 		
-		if !is_dead:
-			position.x -= direction * 20.0 if direction != 0 else 20.0
-		
 		if body is Grape:
 			body.collision_shape_2d.set_deferred("disabled", true)
 		
@@ -217,9 +213,12 @@ func _on_downward_area_2d_area_entered(area):
 		bounce_off_enemy(area.get_parent())
 			
 func bounce_off_enemy(enemy):
+		if enemy is Sunflower:
+			return
+	
 		enemy.die()
 		
-		if !(enemy is Grape):
+		if !(enemy is Grape || enemy is GreenGrape):
 			coin_collected.emit()
 			
 		if !Input.is_action_pressed(&"jump"):
@@ -286,6 +285,8 @@ func is_enemy(object):
 	elif object is Grapes:
 		return true
 	elif object is Grape:
+		return true
+	elif object is GreenGrape:
 		return true
 	else:
 		return false

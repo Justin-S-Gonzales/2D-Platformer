@@ -21,6 +21,8 @@ var current_state: State = State.ComingOut
 
 var play: bool = true
 
+var is_dead: bool = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():	
 	set_state_timer.start()

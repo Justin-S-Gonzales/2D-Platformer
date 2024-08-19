@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-class_name Grapes
+class_name GreenGrapes
 
 @onready var animation_player = $AnimationPlayer
 @onready var sprite_2d = $Sprite2D
@@ -25,7 +25,7 @@ var start_grape_spawn_point_position: Vector2
 
 # Scenes
 var coin_scene = preload("res://Scenes/coin.tscn")
-var grape_scene = preload("res://Scenes/grape.tscn")
+var grape_scene = preload("res://Scenes/green_grape.tscn")
 
 var death_bounce = 100.0
 

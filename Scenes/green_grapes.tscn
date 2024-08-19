@@ -1,11 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://cdycucqchewc"]
+[gd_scene load_steps=17 format=3 uid="uid://d185ch0ar76u8"]
 
-[ext_resource type="Script" path="res://Scripts/grapes.gd" id="1_8hwwb"]
-[ext_resource type="Texture2D" uid="uid://d2br2k64t4w6b" path="res://Sprites/grapes_sprite_sheet.png" id="1_dlacv"]
-[ext_resource type="Script" path="res://Scripts/GrapesHitbox.gd" id="3_7ljrs"]
-[ext_resource type="Script" path="res://Scripts/GrapesGroundDetector.gd" id="3_83fx5"]
-[ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="3_sc278"]
-[ext_resource type="Script" path="res://Scripts/PlayerDetectionArea.gd" id="6_nlouv"]
+[ext_resource type="Script" path="res://Scripts/green_grapes.gd" id="1_ybwen"]
+[ext_resource type="Texture2D" uid="uid://bjtcs87hgis28" path="res://Sprites/green_grapes_sprite_sheet.png" id="2_xqt8d"]
+[ext_resource type="Script" path="res://Scripts/GrapesGroundDetector.gd" id="3_25ufa"]
+[ext_resource type="Script" path="res://Scripts/GrapesHitbox.gd" id="4_wmlr5"]
+[ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="5_v5nvf"]
+[ext_resource type="Script" path="res://Scripts/PlayerDetectionArea.gd" id="6_2dhpy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3ceql"]
 size = Vector2(12, 20)
@@ -126,16 +126,14 @@ size = Vector2(12, 10)
 
 [node name="Grapes" type="CharacterBody2D"]
 position = Vector2(0, -8)
-script = ExtResource("1_8hwwb")
-full_vertical_jump_velocity = -165.0
-short_vertical_jump_velocity = -30.0
+script = ExtResource("1_ybwen")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 6)
 shape = SubResource("RectangleShape2D_3ceql")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_dlacv")
+texture = ExtResource("2_xqt8d")
 hframes = 10
 vframes = 3
 
@@ -148,21 +146,21 @@ libraries = {
 autostart = true
 
 [node name="GroundDetector" type="Area2D" parent="."]
-script = ExtResource("3_83fx5")
+script = ExtResource("3_25ufa")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GroundDetector"]
 position = Vector2(0, 26)
 shape = SubResource("RectangleShape2D_gttoi")
 
 [node name="Hurtbox" type="Area2D" parent="."]
-script = ExtResource("3_7ljrs")
+script = ExtResource("4_wmlr5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(0, 0.75)
 shape = SubResource("RectangleShape2D_gkxkx")
 
 [node name="HitSound" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("3_sc278")
+stream = ExtResource("5_v5nvf")
 pitch_scale = 1.4
 
 [node name="GrapeSpawnPoint" type="Marker2D" parent="."]
@@ -170,7 +168,7 @@ position = Vector2(-8, 1)
 
 [node name="PlayerDetectionArea" type="Area2D" parent="."]
 collision_mask = 2
-script = ExtResource("6_nlouv")
+script = ExtResource("6_2dhpy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetectionArea"]
 position = Vector2(0, 8)

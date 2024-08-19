@@ -1,0 +1,365 @@
+[gd_scene load_steps=17 format=3 uid="uid://cee0761i1n5lc"]
+
+[ext_resource type="Texture2D" uid="uid://bjtcs87hgis28" path="res://Sprites/green_grapes_sprite_sheet.png" id="1_kduoo"]
+[ext_resource type="Script" path="res://Scripts/GrapesGroundDetector.gd" id="3_33gqt"]
+[ext_resource type="Script" path="res://Scripts/GrapesHitbox.gd" id="4_qj3ys"]
+[ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="5_0fay6"]
+[ext_resource type="Script" path="res://Scripts/PlayerDetectionArea.gd" id="6_42m4a"]
+
+[sub_resource type="GDScript" id="GDScript_73cqd"]
+script/source = "extends CharacterBody2D 
+
+
+
+@onready var animation_player = $AnimationPlayer
+@onready var sprite_2d = $Sprite2D
+@onready var collision_shape_2d = $CollisionShape2D
+@onready var hit_sound = $HitSound
+@onready var grape_spawn_point = $GrapeSpawnPoint
+@onready var player_detection_area = $PlayerDetectionArea
+@onready var reset_collision_mask_timer = $ResetCollisionMaskTimer
+@onready var move_player_area = $MovePlayerArea
+
+# Velocities
+@export var full_vertical_jump_velocity = -180.0
+@export var short_vertical_jump_velocity = -10.0
+var is_full_vertical_jump_velocity = true
+
+@export var grape_x_velocity_absolute = 100
+var grape_x_velocity = -100
+
+# Positions
+@export var coin_spawn_offset: float = 20.0
+var start_grape_spawn_point_position: Vector2
+
+# Scenes
+var coin_scene = preload(\"res://Scenes/coin.tscn\")
+var grape_scene = preload(\"res://Scenes/grape.tscn\")
+
+var death_bounce = 100.0
+
+# Flags
+var is_dead = false
+var should_jump: bool = true
+
+# Boundaries
+@export var death_height = 80
+
+var gravity = 200
+
+enum State {
+	Idle,
+	Jumping,
+	Throwing
+}
+
+var numStates: int = 3
+
+var current_state: State = State.Idle
+
+var play: bool = true
+
+var rng = RandomNumberGenerator.new()
+
+var player: CharacterBody2D = null
+
+func _ready():
+	start_grape_spawn_point_position = grape_spawn_point.position
+
+func _physics_process(delta):
+	if position.y > death_height:
+		queue_free()
+	
+	# Add the gravity.
+	if not is_on_floor():
+		velocity.y += gravity * delta
+
+	move_and_slide()
+	
+	if is_dead:
+		return
+	
+	# Animations
+	if play:
+		match current_state:
+			State.Idle: 
+				animation_player.play(\"idle\")
+			State.Jumping:
+				animation_player.play(\"jump\")
+				#if down_ray_cast_2d.is_colliding():
+					#collision_shape_2d.disabled = false
+			State.Throwing:
+				animation_player.play(\"throw\")
+	else:
+		animation_player.stop()
+		match current_state:
+			State.Jumping: 
+				if !is_on_floor():
+					sprite_2d.frame = 13
+				else:
+					sprite_2d.frame = 0
+			State.Throwing:
+				sprite_2d.frame = 29
+				
+	if player != null:
+		if player.position.x > position.x:
+			sprite_2d.flip_h = true
+			grape_spawn_point.position.x = -start_grape_spawn_point_position.x
+			grape_x_velocity = grape_x_velocity_absolute
+		else:
+			sprite_2d.flip_h = false
+			grape_spawn_point.position.x = start_grape_spawn_point_position.x
+			grape_x_velocity = -grape_x_velocity_absolute
+			
+		if move_player_area.overlaps_body(player): #  move_player_area.has_overlapping_bodies() && 
+			# print(\"overlapping!\")
+			set_collision_layer_value(1, false)
+			player.position.x -= 1
+		else:
+			set_collision_layer_value(1, true)
+
+func loop_state():
+	current_state = (current_state + 1) % numStates	
+
+func _on_change_state_timer_timeout():
+	if is_dead:
+		return
+	loop_state()
+	play = true
+	
+	match current_state:
+		State.Idle:
+			collision_shape_2d.set_deferred(\"disabled\", false)
+		State.Throwing:
+			collision_shape_2d.set_deferred(\"disabled\", false)
+		State.Jumping:
+			if position.y < 0:
+				velocity.y = full_vertical_jump_velocity if is_full_vertical_jump_velocity else short_vertical_jump_velocity
+				is_full_vertical_jump_velocity = true if rng.randi_range(0, 5) == 1 else false
+			else:
+				velocity.y = full_vertical_jump_velocity
+			if is_on_floor():
+				collision_shape_2d.set_deferred(\"disabled\", true)
+	
+func set_play_false():
+	play = false
+
+func _on_area_2d_body_entered(body):
+	reset_collision()
+		
+func reset_collision():
+	if is_dead:
+		return 
+		
+	if velocity.y > 0:
+		collision_shape_2d.set_deferred(\"disabled\", false)
+
+func die():
+	hit_sound.play()
+	sprite_2d.flip_v = true
+	is_dead = true
+	collision_shape_2d.queue_free()
+	velocity.y -= death_bounce
+	
+	# Spawn a coin
+	var coin = coin_scene.instantiate()
+	get_parent().get_parent().add_child(coin)
+	coin.position = Vector2(position.x, position.y - coin_spawn_offset)
+	coin.play_animation()
+	
+	animation_player.stop()
+
+func spawn_grape():
+	var grape = grape_scene.instantiate()
+	get_parent().get_parent().add_child(grape)
+	grape.position = position + grape_spawn_point.position
+	grape.linear_velocity.x = grape_x_velocity
+
+func _on_player_detection_area_body_entered(body):
+	if body is Player:
+		player = body
+
+func _on_player_detection_area_body_exited(body):
+	if body is Player:
+		player = null
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3ceql"]
+size = Vector2(12, 20)
+
+[sub_resource type="Animation" id="Animation_g5cds"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_33f3h"]
+resource_name = "idle"
+length = 0.7
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6]
+}
+
+[sub_resource type="Animation" id="Animation_7hqhs"]
+resource_name = "jump"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [10, 11, 12, 13]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"set_play_false"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_b4ueh"]
+resource_name = "throw"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.7, 1),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"spawn_grape"
+}, {
+"args": [],
+"method": &"set_play_false"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kemyw"]
+_data = {
+"RESET": SubResource("Animation_g5cds"),
+"idle": SubResource("Animation_33f3h"),
+"jump": SubResource("Animation_7hqhs"),
+"throw": SubResource("Animation_b4ueh")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gttoi"]
+size = Vector2(17, 13)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gkxkx"]
+size = Vector2(12, 10.5)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qa0j8"]
+radius = 104.005
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qcdq0"]
+size = Vector2(12, 10)
+
+[node name="GreenGrapes" type="CharacterBody2D"]
+position = Vector2(0, -8)
+script = SubResource("GDScript_73cqd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_3ceql")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_kduoo")
+hframes = 10
+vframes = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_kemyw")
+}
+
+[node name="ChangeStateTimer" type="Timer" parent="."]
+autostart = true
+
+[node name="GroundDetector" type="Area2D" parent="."]
+script = ExtResource("3_33gqt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GroundDetector"]
+position = Vector2(0, 26)
+shape = SubResource("RectangleShape2D_gttoi")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+script = ExtResource("4_qj3ys")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, 0.75)
+shape = SubResource("RectangleShape2D_gkxkx")
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_0fay6")
+pitch_scale = 1.4
+
+[node name="GrapeSpawnPoint" type="Marker2D" parent="."]
+position = Vector2(-8, 1)
+
+[node name="PlayerDetectionArea" type="Area2D" parent="."]
+collision_mask = 2
+script = ExtResource("6_42m4a")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetectionArea"]
+position = Vector2(0, 8)
+shape = SubResource("CircleShape2D_qa0j8")
+
+[node name="MovePlayerArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MovePlayerArea"]
+position = Vector2(0, 11)
+shape = SubResource("RectangleShape2D_qcdq0")
+
+[connection signal="timeout" from="ChangeStateTimer" to="." method="_on_change_state_timer_timeout"]
+[connection signal="body_entered" from="GroundDetector" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="PlayerDetectionArea" to="." method="_on_player_detection_area_body_entered"]
+[connection signal="body_exited" from="PlayerDetectionArea" to="." method="_on_player_detection_area_body_exited"]
