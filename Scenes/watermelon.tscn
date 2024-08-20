@@ -6,6 +6,21 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_0lkij"]
 radius = 16.0
 
+[sub_resource type="Animation" id="Animation_uksr4"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
 [sub_resource type="Animation" id="Animation_100fp"]
 resource_name = "roll"
 length = 1.6
@@ -23,21 +38,6 @@ tracks/0/keys = {
 "values": [0, 1, 2, 3, 4, 5, 6, 7]
 }
 
-[sub_resource type="Animation" id="Animation_uksr4"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_iuyhf"]
 _data = {
 "RESET": SubResource("Animation_uksr4"),
@@ -46,6 +46,7 @@ _data = {
 
 [node name="Watermelon" type="CharacterBody2D"]
 position = Vector2(0, -8)
+slide_on_ceiling = false
 script = ExtResource("1_4wbos")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -68,3 +69,6 @@ target_position = Vector2(-17, 0)
 [node name="RightRayCast" type="RayCast2D" parent="."]
 position = Vector2(0, 9)
 target_position = Vector2(17, 0)
+
+[node name="UpRayCast" type="RayCast2D" parent="."]
+target_position = Vector2(0, -32)

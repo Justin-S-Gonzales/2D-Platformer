@@ -3,11 +3,13 @@ extends CharacterBody2D
 @onready var left_ray_cast = $LeftRayCast
 @onready var right_ray_cast = $RightRayCast
 @onready var animation_player = $AnimationPlayer
+@onready var up_ray_cast = $UpRayCast
 
 @export var speed: float = 100.0
-var gravity = 200.0
-var direction = 1
+@export var push_force = 1.0
 
+var gravity: float = 200.0
+var direction: int = 1
 
 func _physics_process(delta):
 	# Add the gravity.
@@ -24,5 +26,9 @@ func _physics_process(delta):
 		animation_player.advance(0.4)
 		
 	velocity.x = direction * speed
-
+	
 	move_and_slide()
+	
+	if up_ray_cast.is_colliding() && up_ray_cast.get_collider() is Sunflower:
+		var sunflower: Sunflower = up_ray_cast.get_collider()
+		sunflower.position = position + up_ray_cast.target_position

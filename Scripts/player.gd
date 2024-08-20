@@ -188,7 +188,7 @@ func _on_body_area_2d_body_entered(body):
 	if is_dead:
 		return
 	
-	if is_enemy(body):
+	if is_enemy(body) && !(body is Sunflower):
 		if body.is_dead:
 			return
 			

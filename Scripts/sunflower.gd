@@ -23,6 +23,8 @@ var play: bool = true
 
 var is_dead: bool = false
 
+var gravity: float = 200.0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():	
 	set_state_timer.start()
@@ -48,6 +50,11 @@ func _process(delta):
 				sprite_2d.frame = 0
 			State.Retracting:
 				sprite_2d.frame = 6
+				
+	# Add the gravity.
+	# velocity.y += gravity * delta
+	
+	# move_and_slide()
 	
 func set_play_false():
 	play = false

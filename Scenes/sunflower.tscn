@@ -112,10 +112,10 @@ _data = {
 "retract": SubResource("Animation_jrv62")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_dhug0"]
-size = Vector2(16, 17)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8sc8s"]
+size = Vector2(16, 16)
 
-[node name="Sunflower" type="Node2D"]
+[node name="Sunflower" type="CharacterBody2D"]
 position = Vector2(0, -8)
 script = ExtResource("1_2o1af")
 
@@ -136,12 +136,6 @@ libraries = {
 "": SubResource("AnimationLibrary_bpjk5")
 }
 
-[node name="PotStaticBody" type="StaticBody2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PotStaticBody"]
-position = Vector2(0, 7.5)
-shape = SubResource("RectangleShape2D_dhug0")
-
 [node name="SetStateTimer" type="Timer" parent="."]
 wait_time = 0.7
 one_shot = true
@@ -149,6 +143,10 @@ one_shot = true
 [node name="InitAttackTimer" type="Timer" parent="."]
 wait_time = 3.0
 one_shot = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 7)
+shape = SubResource("RectangleShape2D_8sc8s")
 
 [connection signal="timeout" from="SetStateTimer" to="." method="_on_set_state_timeout"]
 [connection signal="timeout" from="InitAttackTimer" to="." method="_on_init_attack_timer_timeout"]
