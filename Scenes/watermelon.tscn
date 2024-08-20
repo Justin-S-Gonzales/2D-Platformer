@@ -65,10 +65,12 @@ autoplay = "roll"
 [node name="LeftRayCast" type="RayCast2D" parent="."]
 position = Vector2(0, 9)
 target_position = Vector2(-17, 0)
+collision_mask = 3
 
 [node name="RightRayCast" type="RayCast2D" parent="."]
 position = Vector2(0, 9)
 target_position = Vector2(17, 0)
+collision_mask = 3
 
 [node name="UpRayCast" type="RayCast2D" parent="."]
 target_position = Vector2(0, -32)

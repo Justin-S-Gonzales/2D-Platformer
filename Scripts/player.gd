@@ -8,8 +8,9 @@ signal fell_to_player_death
 signal got_hit
 
 @onready var sprite_2d = $Sprite2D
-@onready var animation_player = $AnimationPlayer
 @onready var camera_2d = $Camera2D
+@onready var animation_player = $AnimationPlayer
+@onready var shader_animation_player = $ShaderAnimationPlayer
 
 # Collisions
 @onready var collision_shape_2d = $CollisionShape2D
@@ -50,6 +51,9 @@ var coyoteTimeCounter = 0
 @export var jumpBufferTime = 0.18
 var jumpBufferCounter = 0
 
+# Timers
+@onready var set_invulnerability_false_timer = $SetInvulnerabilityFalseTimer
+
 # Animation
 enum AnimationState {
 	Idle,
@@ -63,6 +67,7 @@ var current_animation_state: AnimationState = AnimationState.Idle
 # Flags
 var facing_direction = 1
 var is_dead = false
+var is_invulnerable: bool = false
 
 # Gravity
 @export var full_gravity = 2000.0
@@ -73,6 +78,9 @@ var current_gravity = full_gravity
 
 # Boundaries
 @export var death_height = 80
+
+func _ready():
+	sprite_2d.material.set_shader_parameter("flash_value", 0)
 
 func _physics_process(delta):	
 	# Check for death from fall
@@ -294,15 +302,40 @@ func is_enemy(object):
 		return false
 		
 func take_damage():
-	health.reduce_by(1) # take damage
-	got_hit.emit()
 	player_hit_sound.play()
+
+	if !(health.get_health() - 1 <= 0):
+		# Haha bonk
+		if direction == 0:
+			velocity.x = -hit_bonk_x_velocity
+		else:
+			velocity.x = -sign(velocity.x) * hit_bonk_x_velocity
+		velocity.y = hit_bonk_y_velocity
+	
+	# Don't take damage if we are invulnerable
+	if is_invulnerable:
+		return
+		
+	# Take damage
+	health.reduce_by(1) 
+	got_hit.emit()
+	
+	# Die
 	if health.get_health() <= 0:
 		die()
+		is_invulnerable = true
 		return
 	
-	if direction == 0:
-		velocity.x = -hit_bonk_x_velocity
-	else:
-		velocity.x = -sign(velocity.x) * hit_bonk_x_velocity
-	velocity.y = hit_bonk_y_velocity
+	# Set invulnerability
+	is_invulnerable = true
+	set_invulnerability_false_timer.start()
+	
+	# Play flash animation
+	shader_animation_player.play("hit_flash")
+
+func _on_set_invulnerability_false_timer_timeout():
+	is_invulnerable = false
+	
+	# Stop flash animation
+	shader_animation_player.stop()
+	sprite_2d.material.set_shader_parameter("flash_value", 0)	

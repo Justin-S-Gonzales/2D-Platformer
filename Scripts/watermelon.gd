@@ -16,11 +16,11 @@ func _physics_process(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta
 		
-	if left_ray_cast.is_colliding():
+	if left_ray_cast.is_colliding() && !(left_ray_cast.get_collider() is Player):
 		direction = 1
 		animation_player.speed_scale = 1
 		animation_player.advance(0.4)
-	elif right_ray_cast.is_colliding():
+	elif right_ray_cast.is_colliding() && !(left_ray_cast.get_collider() is Player):
 		direction = -1
 		animation_player.speed_scale = -1
 		animation_player.advance(0.4)
@@ -32,3 +32,12 @@ func _physics_process(delta):
 	if up_ray_cast.is_colliding() && up_ray_cast.get_collider() is Sunflower:
 		var sunflower: Sunflower = up_ray_cast.get_collider()
 		sunflower.position = position + up_ray_cast.target_position
+		
+	if left_ray_cast.is_colliding() && left_ray_cast.get_collider() is Player:
+		var player: Player = left_ray_cast.get_collider()
+		player.take_damage()
+		
+		
+	if right_ray_cast.is_colliding() && right_ray_cast.get_collider() is Player:
+		var player: Player = right_ray_cast.get_collider()
+		player.take_damage()
