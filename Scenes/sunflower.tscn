@@ -117,6 +117,7 @@ size = Vector2(16, 16)
 
 [node name="Sunflower" type="CharacterBody2D"]
 position = Vector2(0, -8)
+collision_layer = 4
 script = ExtResource("1_2o1af")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

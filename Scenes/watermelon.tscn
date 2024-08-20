@@ -46,6 +46,8 @@ _data = {
 
 [node name="Watermelon" type="CharacterBody2D"]
 position = Vector2(0, -8)
+collision_layer = 4
+collision_mask = 5
 slide_on_ceiling = false
 script = ExtResource("1_4wbos")
 
@@ -74,3 +76,4 @@ collision_mask = 3
 
 [node name="UpRayCast" type="RayCast2D" parent="."]
 target_position = Vector2(0, -32)
+collision_mask = 4

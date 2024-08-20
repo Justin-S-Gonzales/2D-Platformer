@@ -126,6 +126,7 @@ size = Vector2(12, 10)
 
 [node name="GreenGrapes" type="CharacterBody2D"]
 position = Vector2(0, -8)
+collision_layer = 4
 script = ExtResource("1_ybwen")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -167,6 +168,7 @@ pitch_scale = 1.4
 position = Vector2(-8, 1)
 
 [node name="PlayerDetectionArea" type="Area2D" parent="."]
+collision_layer = 0
 collision_mask = 2
 script = ExtResource("6_2dhpy")
 

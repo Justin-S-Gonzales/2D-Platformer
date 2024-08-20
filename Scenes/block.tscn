@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://bpcsd2m6ree7n"]
+[gd_scene load_steps=11 format=3 uid="uid://bpcsd2m6ree7n"]
 
 [ext_resource type="Texture2D" uid="uid://d0rdpgi1y5lfp" path="res://Sprites/8bit_platformer_overworld_tilemap.png" id="1_4j0np"]
 [ext_resource type="Script" path="res://Scripts/block.gd" id="1_vc2a6"]
 [ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="3_a8c0i"]
+[ext_resource type="AudioStream" uid="uid://c0ci7r1yfr428" path="res://Sound Effects/PowerupSpawn.wav" id="4_v8hvl"]
 
 [sub_resource type="Animation" id="Animation_3j6bi"]
 length = 0.001
@@ -101,6 +102,7 @@ size = Vector2(16, 16)
 size = Vector2(16, 10)
 
 [node name="Block" type="StaticBody2D"]
+collision_mask = 5
 script = ExtResource("1_vc2a6")
 content_y_offset = -20
 
@@ -126,3 +128,7 @@ shape = SubResource("RectangleShape2D_1awk5")
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_7gj5l")
 target_position = Vector2(0, -7)
+collision_mask = 13
+
+[node name="PowerupSpawnSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_v8hvl")

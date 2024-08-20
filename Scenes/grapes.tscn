@@ -126,6 +126,7 @@ size = Vector2(12, 10)
 
 [node name="Grapes" type="CharacterBody2D"]
 position = Vector2(0, -8)
+collision_layer = 4
 script = ExtResource("1_8hwwb")
 full_vertical_jump_velocity = -165.0
 short_vertical_jump_velocity = -30.0

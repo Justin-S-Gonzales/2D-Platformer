@@ -20,7 +20,7 @@ func _physics_process(delta):
 		direction = 1
 		animation_player.speed_scale = 1
 		animation_player.advance(0.4)
-	elif right_ray_cast.is_colliding() && !(left_ray_cast.get_collider() is Player):
+	elif right_ray_cast.is_colliding() && !(right_ray_cast.get_collider() is Player):
 		direction = -1
 		animation_player.speed_scale = -1
 		animation_player.advance(0.4)

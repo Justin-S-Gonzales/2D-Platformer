@@ -12,3 +12,7 @@ func reduce_by(amount: int) -> int:
 func add(amount: int) -> int:
 	_health += amount
 	return _health
+
+func set_health(amount: int) -> int:
+	_health = amount
+	return _health

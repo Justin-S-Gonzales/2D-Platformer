@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://etwoleebyvjf"]
+
+[ext_resource type="PackedScene" uid="uid://bpcsd2m6ree7n" path="res://Scenes/block.tscn" id="1_mhvva"]
+[ext_resource type="PackedScene" uid="uid://dtkvs58nyw5id" path="res://Scenes/sword_pickup.tscn" id="2_ejq7o"]
+
+[node name="Sword Pickup Block" type="Node2D"]
+
+[node name="Block" parent="." instance=ExtResource("1_mhvva")]
+contentScene = ExtResource("2_ejq7o")
+content_y_offset = -25

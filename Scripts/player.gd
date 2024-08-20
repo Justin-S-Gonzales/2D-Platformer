@@ -24,6 +24,7 @@ signal got_hit
 # Sounds
 @onready var player_hit_sound = $PlayerHitSound
 @onready var jump_sound = $JumpSound
+@onready var powerup_pickup_sound = $PowerupPickupSound
 
 var rng = RandomNumberGenerator.new()
 
@@ -64,10 +65,15 @@ enum AnimationState {
 
 var current_animation_state: AnimationState = AnimationState.Idle
 
+var shader_hit_flash_color: Color = Color(1.0, 0.0, 0.0, 1.0);
+
+var shader_powerup_flash_color: Color = Color(1, 1, 1, 0.48627451062202)
+
 # Flags
 var facing_direction = 1
 var is_dead = false
 var is_invulnerable: bool = false
+var has_powerup: int = 0
 
 # Gravity
 @export var full_gravity = 2000.0
@@ -204,6 +210,22 @@ func _on_body_area_2d_body_entered(body):
 		
 		if body is Grape:
 			body.collision_shape_2d.set_deferred("disabled", true)
+	
+	# Powerups
+	if body is SwordPickup:
+		powerup_pickup_sound.play()
+		body.queue_free()
+		
+		# Play flashing animation for picking up a powerup
+		sprite_2d.material.set_shader_parameter("flash_color", shader_powerup_flash_color)		
+		shader_animation_player.stop()
+		shader_animation_player.play("hit_flash")
+		set_invulnerability_false_timer.start()
+		
+		has_powerup = 1
+		health.set_health(2)
+		
+		got_hit.emit()
 		
 func _on_downward_area_2d_body_entered(body):
 	if is_dead:
@@ -304,7 +326,7 @@ func is_enemy(object):
 func take_damage():
 	player_hit_sound.play()
 
-	if !(health.get_health() - 1 <= 0):
+	if health.get_health() - 1 > 0:
 		# Haha bonk
 		if direction == 0:
 			velocity.x = -hit_bonk_x_velocity
@@ -320,6 +342,9 @@ func take_damage():
 	health.reduce_by(1) 
 	got_hit.emit()
 	
+	# Remove powerup
+	has_powerup = 0
+	
 	# Die
 	if health.get_health() <= 0:
 		die()
@@ -329,8 +354,9 @@ func take_damage():
 	# Set invulnerability
 	is_invulnerable = true
 	set_invulnerability_false_timer.start()
-	
+
 	# Play flash animation
+	sprite_2d.material.set_shader_parameter("flash_color", shader_hit_flash_color)	
 	shader_animation_player.play("hit_flash")
 
 func _on_set_invulnerability_false_timer_timeout():

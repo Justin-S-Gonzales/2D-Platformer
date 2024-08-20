@@ -102,12 +102,9 @@ func _physics_process(delta):
 			grape_spawn_point.position.x = start_grape_spawn_point_position.x
 			grape_x_velocity = -grape_x_velocity_absolute
 			
-		if move_player_area.overlaps_body(player): #  move_player_area.has_overlapping_bodies() && 
-			# print("overlapping!")
-			set_collision_layer_value(1, false)
-			player.position.x -= 1
-		else:
-			set_collision_layer_value(1, true)
+		if move_player_area.overlaps_body(player):
+			player.position.x -= 16
+			player.velocity.x -= 10
 
 func loop_state():
 	current_state = (current_state + 1) % numStates	
