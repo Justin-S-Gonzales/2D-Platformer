@@ -55,7 +55,7 @@ _data = {
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_v5jtf"]
-size = Vector2(14, 12)
+size = Vector2(16, 13)
 
 [node name="Tomatillo" type="CharacterBody2D"]
 script = ExtResource("1_y8e0a")
@@ -79,7 +79,7 @@ target_position = Vector2(-11, 0)
 target_position = Vector2(11, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 1)
+position = Vector2(0, 1.5)
 shape = SubResource("RectangleShape2D_v5jtf")
 
 [node name="HitSound" type="AudioStreamPlayer2D" parent="."]
@@ -87,4 +87,4 @@ stream = ExtResource("3_81o0g")
 pitch_scale = 1.4
 
 [node name="DownRayCast2D" type="RayCast2D" parent="."]
-target_position = Vector2(0, 10)
+target_position = Vector2(0, 9)
