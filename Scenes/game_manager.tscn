@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bwrn2rrg0a1rw"]
 
-[ext_resource type="Script" path="res://scripts/game_manager.gd" id="1_bd34r"]
+[ext_resource type="Script" path="res://Scripts/game_manager.gd" id="1_bd34r"]
 [ext_resource type="PackedScene" uid="uid://cfsmscduqdce" path="res://Scenes/hud.tscn" id="2_3ck1o"]
 [ext_resource type="PackedScene" uid="uid://61c3pc6blris" path="res://Scenes/level.tscn" id="3_hi7tf"]
 [ext_resource type="AudioStream" uid="uid://c1jt0o8jaomkx" path="res://Sound Effects/kudamono_theme_v2.wav" id="4_sunt3"]

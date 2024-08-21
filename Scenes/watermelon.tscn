@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://b7b0sq3hp815q"]
 
-[ext_resource type="Script" path="res://scripts/watermelon.gd" id="1_4wbos"]
+[ext_resource type="Script" path="res://Scripts/watermelon.gd" id="1_4wbos"]
 [ext_resource type="Texture2D" uid="uid://dkt7vcpyidpf8" path="res://Sprites/watermelon_sheet.png" id="1_tcrsd"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0lkij"]
