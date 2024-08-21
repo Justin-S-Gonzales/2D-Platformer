@@ -10,7 +10,6 @@ signal player_respawned
 @onready var start_position = $"Start Position"
 @onready var player = $Player
 @onready var respawn_timer = $RespawnTimer
-@onready var clouds = $ParallaxBackground/Clouds
 
 @export var cloud_movement_speed = 5.0
 
@@ -25,7 +24,8 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	clouds.motion_offset.x -= cloud_movement_speed * delta
+	pass
+	# clouds.motion_offset.x -= cloud_movement_speed * delta
 
 func _on_player_coin_collected():
 	coin_collected.emit()

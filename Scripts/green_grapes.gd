@@ -8,7 +8,6 @@ class_name GreenGrapes
 @onready var hit_sound = $HitSound
 @onready var grape_spawn_point = $GrapeSpawnPoint
 @onready var player_detection_area = $PlayerDetectionArea
-@onready var reset_collision_mask_timer = $ResetCollisionMaskTimer
 @onready var move_player_area = $MovePlayerArea
 
 # Velocities
