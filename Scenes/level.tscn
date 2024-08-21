@@ -310,7 +310,7 @@ size = Vector2(50, 441)
 script = ExtResource("1_4h808")
 
 [node name="Player" parent="." instance=ExtResource("1_xv6u5")]
-position = Vector2(1657, -5)
+position = Vector2(3137, -5)
 
 [node name="ForegroundTileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_0yqxh")
@@ -378,4 +378,13 @@ one_shot = true
 [connection signal="coin_collected" from="Player" to="." method="_on_player_coin_collected"]
 [connection signal="fell_to_player_death" from="Player" to="." method="_on_player_fell_to_player_death"]
 [connection signal="got_hit" from="Player" to="." method="_on_player_got_hit"]
+[connection signal="body_entered" from="ForegroundTileMap/Coin" to="ForegroundTileMap/Coin" method="_on_body_entered"]
+[connection signal="body_entered" from="ForegroundTileMap/@Area2D@22452" to="ForegroundTileMap/@Area2D@22452" method="_on_body_entered"]
+[connection signal="body_entered" from="ForegroundTileMap/@Area2D@22453" to="ForegroundTileMap/@Area2D@22453" method="_on_body_entered"]
+[connection signal="body_entered" from="ForegroundTileMap/@Area2D@22454" to="ForegroundTileMap/@Area2D@22454" method="_on_body_entered"]
+[connection signal="body_entered" from="ForegroundTileMap/@Area2D@22455" to="ForegroundTileMap/@Area2D@22455" method="_on_body_entered"]
+[connection signal="body_entered" from="ForegroundTileMap/@Area2D@22456" to="ForegroundTileMap/@Area2D@22456" method="_on_body_entered"]
+[connection signal="body_entered" from="ForegroundTileMap/@Area2D@22463" to="ForegroundTileMap/@Area2D@22463" method="_on_body_entered"]
+[connection signal="body_entered" from="ForegroundTileMap/@Area2D@22464" to="ForegroundTileMap/@Area2D@22464" method="_on_body_entered"]
+[connection signal="body_entered" from="ForegroundTileMap/@Area2D@22465" to="ForegroundTileMap/@Area2D@22465" method="_on_body_entered"]
 [connection signal="timeout" from="RespawnTimer" to="." method="_on_respawn_timer_timeout"]
