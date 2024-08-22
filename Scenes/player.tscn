@@ -1,12 +1,14 @@
-[gd_scene load_steps=20 format=3 uid="uid://8nf3yomfq2v3"]
+[gd_scene load_steps=24 format=3 uid="uid://8nf3yomfq2v3"]
 
 [ext_resource type="Texture2D" uid="uid://c4n6b8gjilxls" path="res://Sprites/orange_boy_sprite_sheet.png" id="1_p6tfg"]
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_weqlp"]
 [ext_resource type="Shader" path="res://Shaders/damage_flash.gdshader" id="2_wmme1"]
 [ext_resource type="PackedScene" uid="uid://clkixx41haij8" path="res://Scenes/health.tscn" id="3_k18on"]
 [ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="4_cqvxm"]
+[ext_resource type="Texture2D" uid="uid://c0phn1k626iep" path="res://Sprites/orenji_sword_air_attack_sheet.png" id="4_uo2et"]
 [ext_resource type="AudioStream" uid="uid://cynf3534tte1h" path="res://Sound Effects/jump.wav" id="5_3x572"]
 [ext_resource type="AudioStream" uid="uid://bwr3wgkdtvdx4" path="res://Sound Effects/Powerup.wav" id="7_ttah5"]
+[ext_resource type="AudioStream" uid="uid://f6161uw3qadw" path="res://Sound Effects/sword_attack.wav" id="9_akw3n"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jays8"]
 shader = ExtResource("2_wmme1")
@@ -26,6 +28,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AttackSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
 }
 
 [sub_resource type="Animation" id="Animation_jq7dj"]
@@ -62,24 +76,91 @@ tracks/0/keys = {
 "values": [2, 1, 0, 1]
 }
 
+[sub_resource type="Animation" id="Animation_wl320"]
+resource_name = "sword_air_attack"
+length = 0.45
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AttackSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.225, 0.3, 0.375),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.025, 0.45),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"hide"
+}, {
+"args": [],
+"method": &"show"
+}]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AttackSprite")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.025, 0.45),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"show"
+}, {
+"args": [],
+"method": &"hide"
+}]
+}
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.45),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"reset_animation_state"
+}]
+}
+tracks/4/type = "method"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("SwordAttackSound")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.166667),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0.0],
+"method": &"play"
+}]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_sab3l"]
 _data = {
 "RESET": SubResource("Animation_81qa2"),
 "run": SubResource("Animation_jq7dj"),
+"sword_air_attack": SubResource("Animation_wl320"),
 "walk": SubResource("Animation_cnxwg")
 }
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_qbebo"]
-size = Vector2(11, 11)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3r6sm"]
-size = Vector2(16, 15)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_nt2gy"]
-size = Vector2(11, 7.5)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ljvvv"]
-size = Vector2(10, 5.75)
 
 [sub_resource type="Animation" id="Animation_iafol"]
 length = 0.001
@@ -119,6 +200,21 @@ _data = {
 "hit_flash": SubResource("Animation_jkti8")
 }
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qbebo"]
+size = Vector2(11, 11)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3r6sm"]
+size = Vector2(16, 15)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nt2gy"]
+size = Vector2(11, 7.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ljvvv"]
+size = Vector2(10, 5.75)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_laqgv"]
+radius = 24.0
+
 [node name="Player" type="CharacterBody2D"]
 z_index = 5
 collision_layer = 2
@@ -136,9 +232,19 @@ texture = ExtResource("1_p6tfg")
 hframes = 4
 frame = 1
 
+[node name="AttackSprite" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("4_uo2et")
+hframes = 5
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_sab3l")
+}
+
+[node name="ShaderAnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_waj3j")
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -191,13 +297,18 @@ volume_db = -10.0
 
 [node name="SetInvulnerabilityFalseTimer" type="Timer" parent="."]
 
-[node name="ShaderAnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_waj3j")
-}
-
 [node name="PowerupPickupSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("7_ttah5")
+
+[node name="SwordAttackSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_akw3n")
+
+[node name="SwordAttackHitBox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 20
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SwordAttackHitBox"]
+shape = SubResource("CircleShape2D_laqgv")
 
 [connection signal="area_entered" from="BodyArea2D" to="." method="_on_body_area_2d_area_entered"]
 [connection signal="body_entered" from="BodyArea2D" to="." method="_on_body_area_2d_body_entered"]

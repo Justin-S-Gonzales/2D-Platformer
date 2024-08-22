@@ -80,3 +80,6 @@ func disable_attack_area():
 func enable_attack_area():
 	attack_area_collision_shape_2d.disabled = false
 	
+func die():
+	# Todo for sword attack
+	return

@@ -41,3 +41,6 @@ func _physics_process(delta):
 	if right_ray_cast.is_colliding() && right_ray_cast.get_collider() is Player:
 		var player: Player = right_ray_cast.get_collider()
 		player.take_damage()
+
+func die():
+	return # todo

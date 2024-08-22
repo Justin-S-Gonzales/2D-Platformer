@@ -44,6 +44,9 @@ func _physics_process(delta):
 	move_and_slide()
 
 func die():
+	if is_dead:
+		return 
+		
 	hit_sound.play()
 	sprite_2d.flip_v = true
 	is_dead = true

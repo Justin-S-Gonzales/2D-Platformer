@@ -11,12 +11,14 @@ signal got_hit
 @onready var camera_2d = $Camera2D
 @onready var animation_player = $AnimationPlayer
 @onready var shader_animation_player = $ShaderAnimationPlayer
+@onready var attack_sprite: Sprite2D = $AttackSprite
 
 # Collisions
 @onready var collision_shape_2d = $CollisionShape2D
 @onready var body_area_2d = $BodyArea2D
 @onready var downward_area_2d = $DownwardArea2D
 @onready var upward_area_2d = $UpwardArea2D
+@onready var sword_attack_hit_box: Area2D = $SwordAttackHitBox
 
 # Health
 @onready var health = $Health
@@ -25,6 +27,7 @@ signal got_hit
 @onready var player_hit_sound = $PlayerHitSound
 @onready var jump_sound = $JumpSound
 @onready var powerup_pickup_sound = $PowerupPickupSound
+@onready var sword_attack_sound: AudioStreamPlayer2D = $SwordAttackSound
 
 var rng = RandomNumberGenerator.new()
 
@@ -60,7 +63,8 @@ enum AnimationState {
 	Idle,
 	Walking,
 	Running,
-	Jumping
+	Jumping,
+	Attacking
 }
 
 var current_animation_state: AnimationState = AnimationState.Idle
@@ -137,7 +141,7 @@ func _physics_process(delta):
 		current_max_speed = max_running_speed
 	else:
 		current_max_speed = max_walking_speed
-	
+			
 	# Apply movement	
 	if direction != 0:
 		if abs(velocity.x) > current_max_speed:
@@ -152,23 +156,28 @@ func _physics_process(delta):
 		facing_direction = direction
 	
 	sprite_2d.flip_h = facing_direction < 0
-		
-	# Animation states
-	if velocity.y < 0:
-		current_animation_state = AnimationState.Jumping
-		
-	if is_on_floor():
-		current_animation_state = AnimationState.Idle
+	attack_sprite.flip_h  = facing_direction < 0
 	
-	if !(current_animation_state == AnimationState.Jumping):
-		if direction != 0:
-			if Input.is_action_pressed(&"run"):
-				current_animation_state = AnimationState.Running
-			else:
-				current_animation_state = AnimationState.Walking
-		else:
+	# Powerup moves
+	if has_powerup == 1 && (Input.is_action_just_pressed(&"attack") || current_animation_state == AnimationState.Attacking):
+			current_animation_state = AnimationState.Attacking
+	else:
+		# Animation states
+		if velocity.y < 0:
+			current_animation_state = AnimationState.Jumping
+			
+		if is_on_floor():
 			current_animation_state = AnimationState.Idle
 		
+		if !(current_animation_state == AnimationState.Jumping):
+			if direction != 0:
+				if Input.is_action_pressed(&"run"):
+					current_animation_state = AnimationState.Running
+				else:
+					current_animation_state = AnimationState.Walking
+			else:
+				current_animation_state = AnimationState.Idle
+	
 	# Play animations
 	match current_animation_state:
 		AnimationState.Idle:
@@ -179,6 +188,13 @@ func _physics_process(delta):
 			animation_player.play(&"run")
 		AnimationState.Jumping:
 			play_jump_animation()
+		AnimationState.Attacking:
+			animation_player.play(&"sword_air_attack")
+	
+	if current_animation_state == AnimationState.Attacking && sword_attack_hit_box.has_overlapping_bodies():
+		for body in sword_attack_hit_box.get_overlapping_bodies():
+			if is_enemy(body) && !body.is_dead:
+				kill_enemy(body)
 
 	move_and_slide()
 
@@ -246,15 +262,18 @@ func bounce_off_enemy(enemy):
 		if enemy is Sunflower:
 			return
 	
-		enemy.die()
-		
-		if !(enemy is Grape || enemy is GreenGrape):
-			coin_collected.emit()
+		kill_enemy(enemy)
 			
 		if !Input.is_action_pressed(&"jump"):
 			velocity.y = upward_bounce_velocity
 		else:	
 			jump()
+			
+func kill_enemy(enemy):
+	enemy.die()
+		
+	if !(enemy is Grape || enemy is GreenGrape):
+		coin_collected.emit()
 
 func _on_upward_area_2d_body_entered(body):
 	if is_dead:
@@ -279,11 +298,15 @@ func die():
 	if is_dead:
 		return 
 	sprite_2d.flip_v = true
+	attack_sprite.flip_v = true
 	is_dead = true
 	collision_shape_2d.queue_free()
 	velocity.y = -death_bounce
 	current_gravity = death_gravity
 	death_x_velocity = velocity.x
+	
+	# Remove powerup
+	has_powerup = 0
 
 func get_health():
 	health.get_health()
@@ -342,9 +365,6 @@ func take_damage():
 	health.reduce_by(1) 
 	got_hit.emit()
 	
-	# Remove powerup
-	has_powerup = 0
-	
 	# Die
 	if health.get_health() <= 0:
 		die()
@@ -358,6 +378,10 @@ func take_damage():
 	# Play flash animation
 	sprite_2d.material.set_shader_parameter("flash_color", shader_hit_flash_color)	
 	shader_animation_player.play("hit_flash")
+	
+	# Reset back to normal sprite if attack animation was interupted
+	attack_sprite.hide()
+	sprite_2d.show()
 
 func _on_set_invulnerability_false_timer_timeout():
 	is_invulnerable = false
@@ -365,3 +389,6 @@ func _on_set_invulnerability_false_timer_timeout():
 	# Stop flash animation
 	shader_animation_player.stop()
 	sprite_2d.material.set_shader_parameter("flash_value", 0)	
+
+func reset_animation_state():
+	current_animation_state = AnimationState.Idle
