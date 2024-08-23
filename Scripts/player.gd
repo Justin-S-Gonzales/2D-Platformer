@@ -161,6 +161,11 @@ func _physics_process(delta):
 	# Powerup moves
 	if has_powerup == 1 && (Input.is_action_just_pressed(&"attack") || current_animation_state == AnimationState.Attacking):
 			current_animation_state = AnimationState.Attacking
+			
+			if Input.is_action_just_pressed(&"attack") && is_on_floor():
+				animation_player.play(&"ground_sword_attack")
+			elif Input.is_action_just_pressed(&"attack") && !is_on_floor():
+				animation_player.play(&"sword_air_attack")
 	else:
 		# Animation states
 		if velocity.y < 0:
@@ -188,9 +193,7 @@ func _physics_process(delta):
 			animation_player.play(&"run")
 		AnimationState.Jumping:
 			play_jump_animation()
-		AnimationState.Attacking:
-			animation_player.play(&"sword_air_attack")
-	
+			
 	if current_animation_state == AnimationState.Attacking && sword_attack_hit_box.has_overlapping_bodies():
 		for body in sword_attack_hit_box.get_overlapping_bodies():
 			if is_enemy(body) && !body.is_dead:
