@@ -93,9 +93,11 @@ var current_gravity = full_gravity
 # Boundaries
 @export var death_height = 80
 
+# Scenes
+var sword_beam_scene = preload("res://Scenes/sword_beam.tscn")
+
 func _ready():
 	material.set_shader_parameter("flash_value", 0)
-	has_powerup = 1
 
 func _physics_process(delta):	
 	# Check for death from fall
@@ -173,6 +175,8 @@ func _physics_process(delta):
 			
 			if Input.is_action_just_pressed(&"attack") && is_on_floor():
 				animation_player.play(&"ground_sword_attack")
+				if current_attack == 0 && health.get_health() == 2:
+					spawn_sword_beam()
 				current_attack = 1
 			elif Input.is_action_just_pressed(&"attack") && !is_on_floor():
 				animation_player.play(&"sword_air_attack")
@@ -205,6 +209,7 @@ func _physics_process(delta):
 		AnimationState.Jumping:
 			play_jump_animation()
 			
+	# Sword attack
 	if current_animation_state == AnimationState.Attacking:
 		if current_attack == 1:
 			if facing_direction == 1 && sword_right_ground_attack_hit_box.has_overlapping_bodies():
@@ -421,3 +426,12 @@ func reset_animation_state():
 func set_sword_sound_to_random_pitch():
 	sword_attack_sound.pitch_scale = 1.0 + rng.randf_range(-2.0, 2.0) * 0.1 # Set pitch to be different every time
 	
+func spawn_sword_beam():
+	var sword_beam: SwordBeam = sword_beam_scene.instantiate()
+	get_parent().get_parent().add_child(sword_beam)
+	sword_beam.position = position
+	
+	# flipping
+	if facing_direction == -1:
+		sword_beam.flip_sprite()
+		sword_beam.reverse_velocity()

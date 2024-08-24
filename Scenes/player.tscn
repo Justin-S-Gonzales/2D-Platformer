@@ -395,6 +395,7 @@ stream = ExtResource("7_ttah5")
 stream = ExtResource("9_akw3n")
 
 [node name="SwordAirAttackHitBox" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 20
 
@@ -402,6 +403,7 @@ collision_mask = 20
 shape = SubResource("CircleShape2D_laqgv")
 
 [node name="SwordRightGroundAttackHitBox" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 20
 
@@ -410,6 +412,7 @@ position = Vector2(6, 0)
 shape = SubResource("CircleShape2D_p2ks7")
 
 [node name="SwordLeftGroundAttackHitBox" type="Area2D" parent="."]
+visible = false
 collision_layer = 0
 collision_mask = 20
 
