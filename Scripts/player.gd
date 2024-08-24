@@ -115,7 +115,7 @@ func _physics_process(delta):
 	direction = Input.get_axis("move_left", "move_right")
 	
 	# Player can't move while doing ground attack
-	if current_attack != 0:
+	if current_attack == 1:
 		direction = 0
 	
 	# Jump buffer

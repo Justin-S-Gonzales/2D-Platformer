@@ -149,6 +149,7 @@ libraries = {
 autostart = true
 
 [node name="GroundDetector" type="Area2D" parent="."]
+collision_mask = 5
 script = ExtResource("3_83fx5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GroundDetector"]

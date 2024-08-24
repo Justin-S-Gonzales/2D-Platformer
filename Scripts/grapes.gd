@@ -9,6 +9,7 @@ class_name Grapes
 @onready var grape_spawn_point = $GrapeSpawnPoint
 @onready var player_detection_area = $PlayerDetectionArea
 @onready var move_player_area = $MovePlayerArea
+@onready var ground_detector: GrapesGroundDetector = $GroundDetector
 
 # Velocities
 @export var full_vertical_jump_velocity = -180.0
@@ -61,9 +62,9 @@ func _physics_process(delta):
 		queue_free()
 	
 	# Add the gravity.
-	if not is_on_floor():
+	if not is_on_floor() && !(ground_detector.has_overlapping_bodies() && ground_detector.get_overlapping_bodies()[0] is Watermelon):
 		velocity.y += gravity * delta
-
+		
 	move_and_slide()
 	
 	if is_dead:
