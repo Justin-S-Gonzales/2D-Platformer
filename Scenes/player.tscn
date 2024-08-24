@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://8nf3yomfq2v3"]
+[gd_scene load_steps=26 format=3 uid="uid://8nf3yomfq2v3"]
 
 [ext_resource type="Texture2D" uid="uid://c4n6b8gjilxls" path="res://Sprites/orange_boy_sprite_sheet.png" id="1_p6tfg"]
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_weqlp"]
@@ -10,10 +10,10 @@
 [ext_resource type="AudioStream" uid="uid://bwr3wgkdtvdx4" path="res://Sound Effects/Powerup.wav" id="7_ttah5"]
 [ext_resource type="AudioStream" uid="uid://f6161uw3qadw" path="res://Sound Effects/sword_attack.wav" id="9_akw3n"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_jays8"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hvvli"]
 shader = ExtResource("2_wmme1")
-shader_parameter/flash_color = Color(0.445934, 0.478207, 0.924731, 1)
-shader_parameter/flash_value = 0.5
+shader_parameter/flash_color = Color(1, 0, 0, 1)
+shader_parameter/flash_value = 0.0
 
 [sub_resource type="Animation" id="Animation_81qa2"]
 length = 0.001
@@ -40,6 +40,87 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_ngirm"]
+resource_name = "ground_sword_attack"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AttackSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [5, 6, 7, 8]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AttackSprite")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"show"
+}, {
+"args": [],
+"method": &"hide"
+}]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"hide"
+}, {
+"args": [],
+"method": &"show"
+}]
+}
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.0666667, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [],
+"method": &"set_sword_sound_to_random_pitch"
+}, {
+"args": [],
+"method": &"reset_animation_state"
+}]
+}
+tracks/4/type = "method"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("SwordAttackSound")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [0.0],
+"method": &"play"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_jq7dj"]
@@ -115,9 +196,12 @@ tracks/3/path = NodePath(".")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0.45),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0.133333, 0.45),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
+"args": [],
+"method": &"set_sword_sound_to_random_pitch"
+}, {
 "args": [],
 "method": &"reset_animation_state"
 }]
@@ -154,84 +238,6 @@ tracks/0/keys = {
 "values": [2, 1, 0, 1]
 }
 
-[sub_resource type="Animation" id="Animation_ngirm"]
-resource_name = "ground_sword_attack"
-length = 0.4
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AttackSprite:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [5, 6, 7, 8]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("AttackSprite")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"values": [{
-"args": [],
-"method": &"show"
-}, {
-"args": [],
-"method": &"hide"
-}]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"values": [{
-"args": [],
-"method": &"hide"
-}, {
-"args": [],
-"method": &"show"
-}]
-}
-tracks/3/type = "method"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath(".")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0.4),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"reset_animation_state"
-}]
-}
-tracks/4/type = "method"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("SwordAttackSound")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0.1),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [0.0],
-"method": &"play"
-}]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_sab3l"]
 _data = {
 "RESET": SubResource("Animation_81qa2"),
@@ -246,14 +252,14 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
+tracks/0/path = NodePath(".:material:shader_parameter/flash_value")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.5]
+"update": 1,
+"values": [0.0]
 }
 
 [sub_resource type="Animation" id="Animation_jkti8"]
@@ -263,14 +269,14 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
+tracks/0/path = NodePath(".:material:shader_parameter/flash_value")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [0.6, 0.0]
+"values": [0.5, 0.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_waj3j"]
@@ -294,8 +300,12 @@ size = Vector2(10, 5.75)
 [sub_resource type="CircleShape2D" id="CircleShape2D_laqgv"]
 radius = 24.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_p2ks7"]
+radius = 20.0
+
 [node name="Player" type="CharacterBody2D"]
 z_index = 5
+material = SubResource("ShaderMaterial_hvvli")
 collision_layer = 2
 collision_mask = 5
 platform_on_leave = 1
@@ -306,13 +316,14 @@ upward_bounce_velocity = -300.0
 jump_gravity = 650
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_jays8")
+use_parent_material = true
 texture = ExtResource("1_p6tfg")
 hframes = 4
 frame = 1
 
 [node name="AttackSprite" type="Sprite2D" parent="."]
 visible = false
+use_parent_material = true
 texture = ExtResource("4_uo2et")
 hframes = 5
 vframes = 2
@@ -383,12 +394,28 @@ stream = ExtResource("7_ttah5")
 [node name="SwordAttackSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("9_akw3n")
 
-[node name="SwordAttackHitBox" type="Area2D" parent="."]
+[node name="SwordAirAttackHitBox" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 20
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SwordAttackHitBox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SwordAirAttackHitBox"]
 shape = SubResource("CircleShape2D_laqgv")
+
+[node name="SwordRightGroundAttackHitBox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 20
+
+[node name="LeftGroundAttackCollisionShape" type="CollisionShape2D" parent="SwordRightGroundAttackHitBox"]
+position = Vector2(6, 0)
+shape = SubResource("CircleShape2D_p2ks7")
+
+[node name="SwordLeftGroundAttackHitBox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 20
+
+[node name="LeftGroundAttackCollisionShape" type="CollisionShape2D" parent="SwordLeftGroundAttackHitBox"]
+position = Vector2(-6, 0)
+shape = SubResource("CircleShape2D_p2ks7")
 
 [connection signal="area_entered" from="BodyArea2D" to="." method="_on_body_area_2d_area_entered"]
 [connection signal="body_entered" from="BodyArea2D" to="." method="_on_body_area_2d_body_entered"]

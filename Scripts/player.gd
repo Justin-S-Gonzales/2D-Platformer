@@ -18,7 +18,10 @@ signal got_hit
 @onready var body_area_2d = $BodyArea2D
 @onready var downward_area_2d = $DownwardArea2D
 @onready var upward_area_2d = $UpwardArea2D
-@onready var sword_attack_hit_box: Area2D = $SwordAttackHitBox
+@onready var sword_air_attack_hit_box: Area2D = $SwordAirAttackHitBox
+@onready var sword_right_ground_attack_hit_box: Area2D = $SwordRightGroundAttackHitBox
+@onready var sword_left_ground_attack_hit_box: Area2D = $SwordLeftGroundAttackHitBox
+var ground_attack_collision_shape_abs_x_offset: float = 6.0
 
 # Health
 @onready var health = $Health
@@ -78,6 +81,7 @@ var facing_direction = 1
 var is_dead = false
 var is_invulnerable: bool = false
 var has_powerup: int = 0
+var current_attack: int = 0
 
 # Gravity
 @export var full_gravity = 2000.0
@@ -90,7 +94,8 @@ var current_gravity = full_gravity
 @export var death_height = 80
 
 func _ready():
-	sprite_2d.material.set_shader_parameter("flash_value", 0)
+	material.set_shader_parameter("flash_value", 0)
+	has_powerup = 1
 
 func _physics_process(delta):	
 	# Check for death from fall
@@ -106,6 +111,10 @@ func _physics_process(delta):
 	
 	# Get the input direction
 	direction = Input.get_axis("move_left", "move_right")
+	
+	# Player can't move while doing ground attack
+	if current_attack != 0:
+		direction = 0
 	
 	# Jump buffer
 	if Input.is_action_just_pressed(&"jump"):
@@ -164,8 +173,10 @@ func _physics_process(delta):
 			
 			if Input.is_action_just_pressed(&"attack") && is_on_floor():
 				animation_player.play(&"ground_sword_attack")
+				current_attack = 1
 			elif Input.is_action_just_pressed(&"attack") && !is_on_floor():
 				animation_player.play(&"sword_air_attack")
+				current_attack = 2
 	else:
 		# Animation states
 		if velocity.y < 0:
@@ -194,12 +205,22 @@ func _physics_process(delta):
 		AnimationState.Jumping:
 			play_jump_animation()
 			
-	if current_animation_state == AnimationState.Attacking && sword_attack_hit_box.has_overlapping_bodies():
-		for body in sword_attack_hit_box.get_overlapping_bodies():
-			if is_enemy(body) && !body.is_dead:
-				kill_enemy(body)
+	if current_animation_state == AnimationState.Attacking:
+		if current_attack == 1:
+			if facing_direction == 1 && sword_right_ground_attack_hit_box.has_overlapping_bodies():
+				slash_enemies_in_hitbox(sword_right_ground_attack_hit_box)
+			if facing_direction == -1 && sword_left_ground_attack_hit_box.has_overlapping_bodies():
+				slash_enemies_in_hitbox(sword_left_ground_attack_hit_box)
+				
+		if current_attack == 2 && sword_air_attack_hit_box.has_overlapping_bodies():
+			slash_enemies_in_hitbox(sword_air_attack_hit_box)
 
 	move_and_slide()
+
+func slash_enemies_in_hitbox(hitbox: Area2D):
+	for body in hitbox.get_overlapping_bodies():
+		if is_enemy(body) && !body.is_dead:
+			kill_enemy(body)
 
 # Camera
 func get_camera():
@@ -236,9 +257,9 @@ func _on_body_area_2d_body_entered(body):
 		body.queue_free()
 		
 		# Play flashing animation for picking up a powerup
-		sprite_2d.material.set_shader_parameter("flash_color", shader_powerup_flash_color)		
+		material.set_shader_parameter(&"flash_color", shader_powerup_flash_color)		
 		shader_animation_player.stop()
-		shader_animation_player.play("hit_flash")
+		shader_animation_player.play(&"hit_flash")
 		set_invulnerability_false_timer.start()
 		
 		has_powerup = 1
@@ -379,7 +400,7 @@ func take_damage():
 	set_invulnerability_false_timer.start()
 
 	# Play flash animation
-	sprite_2d.material.set_shader_parameter("flash_color", shader_hit_flash_color)	
+	material.set_shader_parameter("flash_color", shader_hit_flash_color)	
 	shader_animation_player.play("hit_flash")
 	
 	# Reset back to normal sprite if attack animation was interupted
@@ -391,7 +412,12 @@ func _on_set_invulnerability_false_timer_timeout():
 	
 	# Stop flash animation
 	shader_animation_player.stop()
-	sprite_2d.material.set_shader_parameter("flash_value", 0)	
+	material.set_shader_parameter("flash_value", 0)	
 
 func reset_animation_state():
 	current_animation_state = AnimationState.Idle
+	current_attack = 0
+
+func set_sword_sound_to_random_pitch():
+	sword_attack_sound.pitch_scale = 1.0 + rng.randf_range(-2.0, 2.0) * 0.1 # Set pitch to be different every time
+	
