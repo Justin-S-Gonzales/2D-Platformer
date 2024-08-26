@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://brjg4y1ve34af"]
+[gd_scene load_steps=10 format=3 uid="uid://brjg4y1ve34af"]
 
 [ext_resource type="Script" path="res://Scripts/tomatillo.gd" id="1_y8e0a"]
 [ext_resource type="Texture2D" uid="uid://c4b6mg1s820iu" path="res://Sprites/tomatillo_guy_sheet.png" id="2_7bi1t"]
 [ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="3_81o0g"]
+[ext_resource type="PackedScene" uid="uid://cckdiwjdpwpig" path="res://Scenes/Components/content.tscn" id="4_nvd44"]
+[ext_resource type="PackedScene" uid="uid://c6jdtypklm3oc" path="res://Scenes/coin.tscn" id="5_c1yqc"]
 
 [sub_resource type="Animation" id="Animation_bnnlf"]
 length = 0.001
@@ -61,7 +63,6 @@ size = Vector2(16, 13)
 collision_layer = 4
 collision_mask = 5
 script = ExtResource("1_y8e0a")
-metadata/_edit_group_ = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -93,3 +94,7 @@ pitch_scale = 1.4
 [node name="DownRayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(0, 9)
 collision_mask = 5
+
+[node name="Content" parent="." instance=ExtResource("4_nvd44")]
+position = Vector2(0, -20)
+content_scene = ExtResource("5_c1yqc")

@@ -1,10 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://ddlxr0mbji4rf"]
+[gd_scene load_steps=7 format=3 uid="uid://5qc4jq2cv5ov"]
 
-[ext_resource type="Script" path="res://Scripts/tomato.gd" id="1_2ndlc"]
-[ext_resource type="Texture2D" uid="uid://bwv6vbv8xepb3" path="res://Sprites/tomato_guy_sheet.png" id="1_4ld1i"]
-[ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="3_y46o1"]
-[ext_resource type="PackedScene" uid="uid://cckdiwjdpwpig" path="res://Scenes/Components/content.tscn" id="4_sjwmv"]
-[ext_resource type="PackedScene" uid="uid://c6jdtypklm3oc" path="res://Scenes/coin.tscn" id="5_e0sbp"]
+[ext_resource type="Script" path="res://Scripts/enemy_base.gd" id="1_ilurv"]
+[ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="2_ofh3m"]
 
 [sub_resource type="Animation" id="Animation_bnnlf"]
 length = 0.001
@@ -56,14 +53,10 @@ _data = {
 "walk": SubResource("Animation_7hq7u")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_v5jtf"]
-size = Vector2(16, 13)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3nj04"]
 
-[node name="Tomato" type="CharacterBody2D"]
-collision_layer = 4
-collision_mask = 5
-script = ExtResource("1_2ndlc")
-metadata/_edit_group_ = true
+[node name="EnemyBase" type="CharacterBody2D"]
+script = ExtResource("1_ilurv")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -72,26 +65,11 @@ libraries = {
 autoplay = "walk"
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_4ld1i")
-hframes = 3
-frame = 1
-
-[node name="LeftRayCast2D" type="RayCast2D" parent="."]
-target_position = Vector2(-11, 0)
-collision_mask = 5
-
-[node name="RightRayCast2D" type="RayCast2D" parent="."]
-target_position = Vector2(11, 0)
-collision_mask = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 1.5)
-shape = SubResource("RectangleShape2D_v5jtf")
+shape = SubResource("RectangleShape2D_3nj04")
 
 [node name="HitSound" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("3_y46o1")
+stream = ExtResource("2_ofh3m")
 pitch_scale = 1.4
-
-[node name="Content" parent="." instance=ExtResource("4_sjwmv")]
-position = Vector2(0, -20)
-content_scene = ExtResource("5_e0sbp")

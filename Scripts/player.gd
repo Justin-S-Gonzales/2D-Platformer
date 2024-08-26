@@ -32,6 +32,9 @@ var ground_attack_collision_shape_abs_x_offset: float = 6.0
 @onready var powerup_pickup_sound = $PowerupPickupSound
 @onready var sword_attack_sound: AudioStreamPlayer2D = $SwordAttackSound
 
+# Components
+@onready var enemy_determiner: EnemyDeterminer = $EnemyDeterminer
+
 var rng = RandomNumberGenerator.new()
 
 # Speeds and velocities
@@ -224,7 +227,7 @@ func _physics_process(delta):
 
 func slash_enemies_in_hitbox(hitbox: Area2D):
 	for body in hitbox.get_overlapping_bodies():
-		if is_enemy(body) && !body.is_dead:
+		if enemy_determiner.is_enemy(body) && !body.is_dead:
 			kill_enemy(body)
 
 # Camera
@@ -240,14 +243,14 @@ func _on_body_area_2d_area_entered(area):
 		area.play_animation()
 		coin_collected.emit()
 	
-	if is_enemy(area.get_parent()) && (area.get_parent() is Sunflower):
+	if enemy_determiner.is_enemy(area.get_parent()) && (area.get_parent() is Sunflower):
 		take_damage()
 	
 func _on_body_area_2d_body_entered(body):
 	if is_dead:
 		return
 	
-	if is_enemy(body) && !(body is Sunflower):
+	if enemy_determiner.is_enemy(body) && !(body is Sunflower):
 		if body.is_dead:
 			return
 			
@@ -276,15 +279,17 @@ func _on_downward_area_2d_body_entered(body):
 	if is_dead:
 		return
 		
-	if is_enemy(body) && !body.is_dead:
+	if enemy_determiner.is_enemy(body) && !body.is_dead:
 		bounce_off_enemy(body)
-		
+	
+	if body is Boomerang:
+		bounce_off_enemy(body)
 
 func _on_downward_area_2d_area_entered(area):
 	if is_dead:
 		return
 		
-	if is_enemy(area.get_parent()) && !area.get_parent().is_dead && !(area is GrapesGroundDetector || area is PlayerDetectionArea):
+	if enemy_determiner.is_enemy(area.get_parent()) && !area.get_parent().is_dead && !(area is GrapesGroundDetector || area is PlayerDetectionArea):
 		bounce_off_enemy(area.get_parent())
 			
 func bounce_off_enemy(enemy):
@@ -313,9 +318,10 @@ func _on_upward_area_2d_body_entered(body):
 		
 	if body is Block:
 		var block = body
-		if block.get_content_amount() > 0:
-			coin_collected.emit()		
+		var content_amt: int = block.get_content_amount()
 		block.play_animation()		
+		if content_amt > 0 && block.content.get_content() is Coin:
+			coin_collected.emit()		
 	
 	if body is BreakableBlock:
 		var block = body
@@ -357,24 +363,6 @@ func play_idle_animation():
 	animation_player.stop()
 	sprite_2d.frame = 1
 
-func is_enemy(object):
-	if object is Tomato:
-		return true
-	elif object is Tomatillo:
-		return true
-	elif object is Sunflower:
-		return true
-	elif object is Grapes:
-		return true
-	elif object is Grape:
-		return true
-	elif object is GreenGrapes:
-		return true
-	elif object is GreenGrape:
-		return true
-	else:
-		return false
-		
 func take_damage():
 	player_hit_sound.play()
 

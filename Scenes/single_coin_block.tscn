@@ -6,4 +6,4 @@
 [node name="SingleCoinBlock" type="Node2D"]
 
 [node name="Block" parent="." instance=ExtResource("2_khrmv")]
-contentScene = ExtResource("3_55aqq")
+content_scene = ExtResource("3_55aqq")

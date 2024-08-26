@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://di150s4dv2jk"]
+[gd_scene load_steps=10 format=3 uid="uid://di150s4dv2jk"]
 
 [ext_resource type="Texture2D" uid="uid://b7pi6buhkgh2a" path="res://Sprites/sword_beam.png" id="1_1r6ej"]
 [ext_resource type="Shader" path="res://Shaders/damage_flash.gdshader" id="1_xxepf"]
 [ext_resource type="Script" path="res://Scripts/sword_beam.gd" id="2_xyg05"]
+[ext_resource type="PackedScene" uid="uid://dlkgpec0i5acn" path="res://Scenes/Components/enemy_determiner.tscn" id="4_pgjip"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iso22"]
 shader = ExtResource("1_xxepf")
@@ -86,5 +87,7 @@ shape = SubResource("CircleShape2D_hegh0")
 wait_time = 0.5
 one_shot = true
 autostart = true
+
+[node name="EnemyDeterminer" parent="." instance=ExtResource("4_pgjip")]
 
 [connection signal="timeout" from="DespawnTimer" to="." method="_on_despawn_timer_timeout"]

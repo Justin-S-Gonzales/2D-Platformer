@@ -6,5 +6,4 @@
 [node name="Sword Pickup Block" type="Node2D"]
 
 [node name="Block" parent="." instance=ExtResource("1_mhvva")]
-contentScene = ExtResource("2_ejq7o")
-content_y_offset = -25
+content_scene = ExtResource("2_ejq7o")

@@ -1,9 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://bpcsd2m6ree7n"]
+[gd_scene load_steps=13 format=3 uid="uid://bpcsd2m6ree7n"]
 
 [ext_resource type="Texture2D" uid="uid://d0rdpgi1y5lfp" path="res://Sprites/8bit_platformer_overworld_tilemap.png" id="1_4j0np"]
 [ext_resource type="Script" path="res://Scripts/block.gd" id="1_vc2a6"]
 [ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="3_a8c0i"]
 [ext_resource type="AudioStream" uid="uid://c0ci7r1yfr428" path="res://Sound Effects/PowerupSpawn.wav" id="4_v8hvl"]
+[ext_resource type="PackedScene" uid="uid://dlkgpec0i5acn" path="res://Scenes/Components/enemy_determiner.tscn" id="5_6xsoy"]
+[ext_resource type="PackedScene" uid="uid://cckdiwjdpwpig" path="res://Scenes/Components/content.tscn" id="6_dylmp"]
 
 [sub_resource type="Animation" id="Animation_3j6bi"]
 length = 0.001
@@ -98,13 +100,12 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1awk5"]
 size = Vector2(16, 16)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7gj5l"]
-size = Vector2(16, 10)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2egdm"]
+size = Vector2(16, 20)
 
 [node name="Block" type="StaticBody2D"]
 collision_mask = 5
 script = ExtResource("1_vc2a6")
-content_y_offset = -20
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_4j0np")
@@ -124,11 +125,18 @@ stream = ExtResource("3_a8c0i")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_1awk5")
 
-[node name="UpShapeCast2D" type="ShapeCast2D" parent="."]
-position = Vector2(0, -4)
-shape = SubResource("RectangleShape2D_7gj5l")
-target_position = Vector2(0, -7)
-collision_mask = 13
-
 [node name="PowerupSpawnSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("4_v8hvl")
+
+[node name="EnemyDeterminer" parent="." instance=ExtResource("5_6xsoy")]
+
+[node name="UpArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 12
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpArea"]
+position = Vector2(0, -7)
+shape = SubResource("RectangleShape2D_2egdm")
+
+[node name="Content" parent="." instance=ExtResource("6_dylmp")]
+position = Vector2(0, -20)

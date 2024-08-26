@@ -10,6 +10,7 @@ class_name Grapes
 @onready var player_detection_area = $PlayerDetectionArea
 @onready var move_player_area = $MovePlayerArea
 @onready var ground_detector: GrapesGroundDetector = $GroundDetector
+@onready var content: Content = $Content
 
 # Velocities
 @export var full_vertical_jump_velocity = -180.0
@@ -20,11 +21,9 @@ var is_full_vertical_jump_velocity = true
 var grape_x_velocity = -100
 
 # Positions
-@export var coin_spawn_offset: float = 20.0
 var start_grape_spawn_point_position: Vector2
 
 # Scenes
-var coin_scene = preload("res://Scenes/coin.tscn")
 var grape_scene = preload("res://Scenes/grape.tscn")
 
 var death_bounce = 100.0
@@ -143,6 +142,9 @@ func reset_collision():
 		collision_shape_2d.set_deferred("disabled", false)
 
 func die():
+	if is_dead:
+		return
+	
 	hit_sound.play()
 	sprite_2d.flip_v = true
 	is_dead = true
@@ -150,10 +152,8 @@ func die():
 	velocity.y -= death_bounce
 	
 	# Spawn a coin
-	var coin = coin_scene.instantiate()
-	get_parent().get_parent().add_child(coin)
-	coin.position = Vector2(position.x, position.y - coin_spawn_offset)
-	coin.play_animation()
+	content.spawn_content()
+	content.get_content().play_animation()
 	
 	animation_player.stop()
 

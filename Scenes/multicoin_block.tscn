@@ -8,5 +8,4 @@
 script = ExtResource("1_t4v4j")
 
 [node name="Block" parent="." instance=ExtResource("2_mldn7")]
-contentScene = ExtResource("3_rohhe")
-content_amount = 20
+content_scene = ExtResource("3_rohhe")

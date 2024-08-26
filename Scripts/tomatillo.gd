@@ -7,6 +7,7 @@ class_name Tomatillo extends CharacterBody2D
 @onready var collision_shape_2d = $CollisionShape2D
 @onready var hit_sound = $HitSound
 @onready var down_ray_cast_2d = $DownRayCast2D
+@onready var content: Content = $Content
 
 # Velocities and speeds
 @export var speed = 60.0
@@ -20,10 +21,6 @@ var direction = -1
 
 # Flags
 var is_dead = false
-
-# Coin
-@export var coin_spawn_offset = 20.0
-var coin_scene = preload("res://Scenes/coin.tscn")
 
 func _physics_process(delta):
 	if position.y > death_height:
@@ -54,7 +51,5 @@ func die():
 	velocity.y -= death_bounce
 	
 	# Spawn a coin
-	var coin = coin_scene.instantiate()
-	get_parent().get_parent().add_child(coin)
-	coin.position = Vector2(position.x, position.y - coin_spawn_offset)
-	coin.play_animation()
+	content.spawn_content()
+	content.get_content().play_animation()

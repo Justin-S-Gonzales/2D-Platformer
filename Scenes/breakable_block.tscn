@@ -1,10 +1,12 @@
-[gd_scene load_steps=13 format=3 uid="uid://b0gmgnuo2jift"]
+[gd_scene load_steps=15 format=3 uid="uid://b0gmgnuo2jift"]
 
 [ext_resource type="Script" path="res://Scripts/breakable_block.gd" id="1_4t6o4"]
 [ext_resource type="Texture2D" uid="uid://brvm87e282csu" path="res://Sprites/block_break.png" id="1_6rpwn"]
 [ext_resource type="PackedScene" uid="uid://c6jdtypklm3oc" path="res://Scenes/coin.tscn" id="2_febii"]
 [ext_resource type="Texture2D" uid="uid://c1iwy0sxr273u" path="res://Sprites/block_break_particles.png" id="4_15cfe"]
 [ext_resource type="AudioStream" uid="uid://d3uqq6oas3jm0" path="res://Sound Effects/block_break3.wav" id="5_xghg1"]
+[ext_resource type="PackedScene" uid="uid://dlkgpec0i5acn" path="res://Scenes/Components/enemy_determiner.tscn" id="6_1axyj"]
+[ext_resource type="PackedScene" uid="uid://cckdiwjdpwpig" path="res://Scenes/Components/content.tscn" id="6_pphs1"]
 
 [sub_resource type="Animation" id="Animation_b72r5"]
 length = 0.001
@@ -78,13 +80,12 @@ gravity = Vector3(0, 98, 0)
 anim_speed_min = 1.0
 anim_speed_max = 2.0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_i0r0x"]
-size = Vector2(16, 10)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_17n4q"]
+size = Vector2(16, 20)
 
 [node name="BreakableBlock" type="StaticBody2D"]
 collision_mask = 5
 script = ExtResource("1_4t6o4")
-contentScene = ExtResource("2_febii")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_6rpwn")
@@ -119,10 +120,18 @@ pitch_scale = 0.75
 [node name="DespawnTimer" type="Timer" parent="."]
 one_shot = true
 
-[node name="UpShapeCast2D" type="ShapeCast2D" parent="."]
-position = Vector2(0, -3)
-shape = SubResource("RectangleShape2D_i0r0x")
-target_position = Vector2(0, -9)
-collision_mask = 5
+[node name="EnemyDeterminer" parent="." instance=ExtResource("6_1axyj")]
+
+[node name="UpArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpArea"]
+position = Vector2(0, -7)
+shape = SubResource("RectangleShape2D_17n4q")
+
+[node name="Content" parent="." instance=ExtResource("6_pphs1")]
+position = Vector2(0, -20)
+content_scene = ExtResource("2_febii")
 
 [connection signal="timeout" from="DespawnTimer" to="." method="_on_despawn_timer_timeout"]

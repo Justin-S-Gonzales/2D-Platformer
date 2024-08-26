@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dlkgpec0i5acn"]
+
+[ext_resource type="Script" path="res://Scripts/enemy_determiner.gd" id="1_r4vde"]
+
+[node name="EnemyDeterminer" type="Node"]
+script = ExtResource("1_r4vde")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://8nf3yomfq2v3"]
+[gd_scene load_steps=27 format=3 uid="uid://8nf3yomfq2v3"]
 
 [ext_resource type="Texture2D" uid="uid://c4n6b8gjilxls" path="res://Sprites/orange_boy_sprite_sheet.png" id="1_p6tfg"]
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_weqlp"]
@@ -9,6 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://cynf3534tte1h" path="res://Sound Effects/jump.wav" id="5_3x572"]
 [ext_resource type="AudioStream" uid="uid://bwr3wgkdtvdx4" path="res://Sound Effects/Powerup.wav" id="7_ttah5"]
 [ext_resource type="AudioStream" uid="uid://f6161uw3qadw" path="res://Sound Effects/sword_attack.wav" id="9_akw3n"]
+[ext_resource type="PackedScene" uid="uid://dlkgpec0i5acn" path="res://Scenes/Components/enemy_determiner.tscn" id="10_5pcyp"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hvvli"]
 shader = ExtResource("2_wmme1")
@@ -289,7 +290,7 @@ _data = {
 size = Vector2(11, 11)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3r6sm"]
-size = Vector2(16, 15)
+size = Vector2(14, 13)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nt2gy"]
 size = Vector2(11, 7.5)
@@ -355,11 +356,10 @@ drag_top_margin = 0.6
 drag_right_margin = 0.0
 
 [node name="BodyArea2D" type="Area2D" parent="."]
-visible = false
 collision_mask = 31
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BodyArea2D"]
-position = Vector2(0, 0.5)
+position = Vector2(0, 1.5)
 shape = SubResource("RectangleShape2D_3r6sm")
 
 [node name="DownwardArea2D" type="Area2D" parent="."]
@@ -419,6 +419,8 @@ collision_mask = 20
 [node name="LeftGroundAttackCollisionShape" type="CollisionShape2D" parent="SwordLeftGroundAttackHitBox"]
 position = Vector2(-6, 0)
 shape = SubResource("CircleShape2D_p2ks7")
+
+[node name="EnemyDeterminer" parent="." instance=ExtResource("10_5pcyp")]
 
 [connection signal="area_entered" from="BodyArea2D" to="." method="_on_body_area_2d_area_entered"]
 [connection signal="body_entered" from="BodyArea2D" to="." method="_on_body_area_2d_body_entered"]

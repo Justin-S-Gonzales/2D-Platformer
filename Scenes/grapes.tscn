@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cdycucqchewc"]
+[gd_scene load_steps=19 format=3 uid="uid://cdycucqchewc"]
 
 [ext_resource type="Script" path="res://Scripts/grapes.gd" id="1_8hwwb"]
 [ext_resource type="Texture2D" uid="uid://d2br2k64t4w6b" path="res://Sprites/grapes_sprite_sheet.png" id="1_dlacv"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://Scripts/GrapesGroundDetector.gd" id="3_83fx5"]
 [ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="3_sc278"]
 [ext_resource type="Script" path="res://Scripts/PlayerDetectionArea.gd" id="6_nlouv"]
+[ext_resource type="PackedScene" uid="uid://cckdiwjdpwpig" path="res://Scenes/Components/content.tscn" id="7_b4ujw"]
+[ext_resource type="PackedScene" uid="uid://c6jdtypklm3oc" path="res://Scenes/coin.tscn" id="8_snuv8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3ceql"]
 size = Vector2(12, 20)
@@ -171,6 +173,7 @@ pitch_scale = 1.4
 position = Vector2(-8, 1)
 
 [node name="PlayerDetectionArea" type="Area2D" parent="."]
+visible = false
 collision_mask = 2
 script = ExtResource("6_nlouv")
 
@@ -185,6 +188,10 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MovePlayerArea"]
 position = Vector2(0, 11)
 shape = SubResource("RectangleShape2D_qcdq0")
+
+[node name="Content" parent="." instance=ExtResource("7_b4ujw")]
+position = Vector2(0, -20)
+content_scene = ExtResource("8_snuv8")
 
 [connection signal="timeout" from="ChangeStateTimer" to="." method="_on_change_state_timer_timeout"]
 [connection signal="body_entered" from="GroundDetector" to="." method="_on_area_2d_body_entered"]

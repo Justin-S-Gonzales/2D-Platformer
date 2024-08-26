@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=4 uid="uid://61c3pc6blris"]
+[gd_scene load_steps=22 format=4 uid="uid://61c3pc6blris"]
 
 [ext_resource type="Script" path="res://Scripts/level.gd" id="1_4h808"]
 [ext_resource type="PackedScene" uid="uid://8nf3yomfq2v3" path="res://Scenes/player.tscn" id="1_xv6u5"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://cdycucqchewc" path="res://Scenes/grapes.tscn" id="11_gj0qp"]
 [ext_resource type="PackedScene" uid="uid://d185ch0ar76u8" path="res://Scenes/green_grapes.tscn" id="12_ek16s"]
 [ext_resource type="PackedScene" uid="uid://b7b0sq3hp815q" path="res://Scenes/watermelon.tscn" id="13_mepfq"]
+[ext_resource type="PackedScene" uid="uid://dde6xxgj0mi5n" path="res://Scenes/boomerang.tscn" id="15_rawgg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_s1tf3"]
 texture = ExtResource("2_kydua")
@@ -184,7 +185,7 @@ size = Vector2(50, 441)
 script = ExtResource("1_4h808")
 
 [node name="Player" parent="." instance=ExtResource("1_xv6u5")]
-position = Vector2(2615, -20)
+position = Vector2(1444, 24)
 
 [node name="ForegroundTileMapLayers" type="Node2D" parent="."]
 z_index = 3
@@ -254,16 +255,10 @@ shape = SubResource("RectangleShape2D_wa63o")
 [node name="RespawnTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="Boomerang" parent="." instance=ExtResource("15_rawgg")]
+position = Vector2(1486, 25)
+
 [connection signal="coin_collected" from="Player" to="." method="_on_player_coin_collected"]
 [connection signal="fell_to_player_death" from="Player" to="." method="_on_player_fell_to_player_death"]
 [connection signal="got_hit" from="Player" to="." method="_on_player_got_hit"]
-[connection signal="body_entered" from="ForegroundTileMapLayers/Foreground_1/Coin" to="ForegroundTileMapLayers/Foreground_1/Coin" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMapLayers/Foreground_1/@Area2D@90893" to="ForegroundTileMapLayers/Foreground_1/@Area2D@90893" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMapLayers/Foreground_1/@Area2D@90894" to="ForegroundTileMapLayers/Foreground_1/@Area2D@90894" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMapLayers/Foreground_1/@Area2D@90900" to="ForegroundTileMapLayers/Foreground_1/@Area2D@90900" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMapLayers/Foreground_1/@Area2D@90901" to="ForegroundTileMapLayers/Foreground_1/@Area2D@90901" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMapLayers/Foreground_1/@Area2D@90902" to="ForegroundTileMapLayers/Foreground_1/@Area2D@90902" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMapLayers/Foreground_1/@Area2D@90903" to="ForegroundTileMapLayers/Foreground_1/@Area2D@90903" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMapLayers/Foreground_1/@Area2D@90904" to="ForegroundTileMapLayers/Foreground_1/@Area2D@90904" method="_on_body_entered"]
-[connection signal="body_entered" from="ForegroundTileMapLayers/Foreground_1/@Area2D@90905" to="ForegroundTileMapLayers/Foreground_1/@Area2D@90905" method="_on_body_entered"]
 [connection signal="timeout" from="RespawnTimer" to="." method="_on_respawn_timer_timeout"]

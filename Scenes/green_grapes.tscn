@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://d185ch0ar76u8"]
+[gd_scene load_steps=19 format=3 uid="uid://d185ch0ar76u8"]
 
 [ext_resource type="Script" path="res://Scripts/green_grapes.gd" id="1_ybwen"]
 [ext_resource type="Texture2D" uid="uid://bjtcs87hgis28" path="res://Sprites/green_grapes_sprite_sheet.png" id="2_xqt8d"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://Scripts/GrapesHitbox.gd" id="4_wmlr5"]
 [ext_resource type="AudioStream" uid="uid://ecvqjm1swido" path="res://Sound Effects/block_hit.wav" id="5_v5nvf"]
 [ext_resource type="Script" path="res://Scripts/PlayerDetectionArea.gd" id="6_2dhpy"]
+[ext_resource type="PackedScene" uid="uid://cckdiwjdpwpig" path="res://Scenes/Components/content.tscn" id="7_tcshj"]
+[ext_resource type="PackedScene" uid="uid://c6jdtypklm3oc" path="res://Scenes/coin.tscn" id="8_y0qr3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3ceql"]
 size = Vector2(12, 20)
@@ -187,6 +189,10 @@ shape = SubResource("RectangleShape2D_qcdq0")
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
 position = Vector2(0, 6)
 scale = Vector2(0.6, 1)
+
+[node name="Content" parent="." instance=ExtResource("7_tcshj")]
+position = Vector2(0, -20)
+content_scene = ExtResource("8_y0qr3")
 
 [connection signal="timeout" from="ChangeStateTimer" to="." method="_on_change_state_timer_timeout"]
 [connection signal="body_entered" from="GroundDetector" to="." method="_on_area_2d_body_entered"]
