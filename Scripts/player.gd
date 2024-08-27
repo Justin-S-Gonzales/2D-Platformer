@@ -12,6 +12,8 @@ signal got_hit
 @onready var animation_player = $AnimationPlayer
 @onready var shader_animation_player = $ShaderAnimationPlayer
 @onready var attack_sprite: Sprite2D = $AttackSprite
+@onready var boomerang_spawn_point_r: Marker2D = $BoomerangSpawnPointR
+@onready var boomerang_spawn_point_l: Marker2D = $BoomerangSpawnPointL
 
 # Collisions
 @onready var collision_shape_2d = $CollisionShape2D
@@ -42,8 +44,8 @@ var rng = RandomNumberGenerator.new()
 @export var max_running_speed = 160.0
 var current_max_speed = 0.0
 
-@export var acceleration = 5.0
-var deceleration = 10.0
+@export var acceleration = 300.0
+@export var deceleration = 340.0
 
 var direction = 0
 
@@ -63,6 +65,7 @@ var jumpBufferCounter = 0
 
 # Timers
 @onready var set_invulnerability_false_timer = $SetInvulnerabilityFalseTimer
+@onready var replenish_boomerangs_timer: Timer = $ReplenishBoomerangsTimer
 
 # Animation
 enum AnimationState {
@@ -97,10 +100,16 @@ var current_gravity = full_gravity
 @export var death_height = 80
 
 # Scenes
-var sword_beam_scene = preload("res://Scenes/sword_beam.tscn")
+var sword_beam_scene: PackedScene = preload("res://Scenes/sword_beam.tscn")
+var boomerang_scene: PackedScene = preload("res://Scenes/boomerang.tscn")
+
+# Boomerangs
+var boomerang_count: int = 3
+var current_boomerang: Boomerang = null
 
 func _ready():
 	material.set_shader_parameter("flash_value", 0)
+	has_powerup = 2
 
 func _physics_process(delta):	
 	# Check for death from fall
@@ -116,10 +125,6 @@ func _physics_process(delta):
 	
 	# Get the input direction
 	direction = Input.get_axis("move_left", "move_right")
-	
-	# Player can't move while doing ground attack
-	if current_attack == 1:
-		direction = 0
 	
 	# Jump buffer
 	if Input.is_action_just_pressed(&"jump"):
@@ -157,13 +162,10 @@ func _physics_process(delta):
 		current_max_speed = max_walking_speed
 			
 	# Apply movement	
-	if direction != 0:
-		if abs(velocity.x) > current_max_speed:
-			velocity.x -= sign(velocity.x) * deceleration
-		else:
-			velocity.x += direction * acceleration
+	if direction != 0 && !(current_attack == 1 || current_attack == 3) && abs(velocity.x) < current_max_speed:
+		velocity.x += direction * acceleration * delta
 	else:
-		velocity.x = move_toward(velocity.x, 0, deceleration)
+		velocity.x = move_toward(velocity.x, 0, deceleration * delta)
 
 	# Flip sprite	
 	if direction != 0:
@@ -178,12 +180,15 @@ func _physics_process(delta):
 			
 			if Input.is_action_just_pressed(&"attack") && is_on_floor():
 				animation_player.play(&"ground_sword_attack")
-				if current_attack == 0 && health.get_health() == 2:
-					spawn_sword_beam()
 				current_attack = 1
 			elif Input.is_action_just_pressed(&"attack") && !is_on_floor():
 				animation_player.play(&"sword_air_attack")
 				current_attack = 2
+	elif has_powerup == 2 && (Input.is_action_just_pressed(&"attack") || current_animation_state == AnimationState.Attacking):
+		if boomerang_count > 0:
+			current_animation_state = AnimationState.Attacking
+			current_attack = 3
+			animation_player.play(&"boomerang_throw")
 	else:
 		# Animation states
 		if velocity.y < 0:
@@ -200,6 +205,12 @@ func _physics_process(delta):
 					current_animation_state = AnimationState.Walking
 			else:
 				current_animation_state = AnimationState.Idle
+	
+	# Boomerang return held move
+	if current_animation_state != AnimationState.Attacking && has_powerup == 2 && Input.is_action_pressed(&"attack") && current_boomerang != null:
+		current_boomerang.set_should_return(false)
+	elif current_boomerang != null:
+		current_boomerang.set_should_return(true)
 	
 	# Play animations
 	match current_animation_state:
@@ -239,7 +250,6 @@ func _on_body_area_2d_area_entered(area):
 		return
 		
 	if area is Coin:
-		var coin = area as Coin
 		area.play_animation()
 		coin_collected.emit()
 	
@@ -415,11 +425,37 @@ func set_sword_sound_to_random_pitch():
 	sword_attack_sound.pitch_scale = 1.0 + rng.randf_range(-2.0, 2.0) * 0.1 # Set pitch to be different every time
 	
 func spawn_sword_beam():
+	if current_attack != 0 && health.get_health() != 2:
+		return
+	
 	var sword_beam: SwordBeam = sword_beam_scene.instantiate()
-	get_parent().get_parent().add_child(sword_beam)
+	get_parent().add_child(sword_beam)
 	sword_beam.position = position
 	
 	# flipping
 	if facing_direction == -1:
 		sword_beam.flip_sprite()
 		sword_beam.reverse_velocity()
+
+func spawn_boomerang():
+	var boomerang: Boomerang = boomerang_scene.instantiate()
+	get_parent().add_child(boomerang)
+	
+	if current_boomerang != null:
+		current_boomerang.set_should_return(true)
+		
+	current_boomerang = boomerang
+	
+	if facing_direction == -1:
+		boomerang.reverse_velocity()
+		boomerang.position = position + boomerang_spawn_point_l.position
+	else:
+		boomerang.position = position + boomerang_spawn_point_r.position
+		
+	boomerang_count -= 1
+	
+	if replenish_boomerangs_timer.is_stopped():
+		replenish_boomerangs_timer.start()
+
+func _on_replenish_boomerangs_timer_timeout() -> void:
+	boomerang_count = 3

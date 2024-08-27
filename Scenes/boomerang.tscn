@@ -8,6 +8,21 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_661wf"]
 radius = 8.0
 
+[sub_resource type="Animation" id="Animation_2fj61"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
 [sub_resource type="Animation" id="Animation_u1u6y"]
 resource_name = "spin"
 length = 0.8
@@ -25,21 +40,6 @@ tracks/0/keys = {
 "values": [0, 1, 2, 3, 4, 5, 6, 7]
 }
 
-[sub_resource type="Animation" id="Animation_2fj61"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_weh6w"]
 _data = {
 "RESET": SubResource("Animation_2fj61"),
@@ -50,9 +50,11 @@ _data = {
 radius = 9.0
 
 [node name="Boomerang" type="RigidBody2D"]
+collision_layer = 16
+collision_mask = 0
 gravity_scale = 0.0
 lock_rotation = true
-linear_velocity = Vector2(200, 0)
+linear_velocity = Vector2(150, -5)
 script = ExtResource("1_1lbp8")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -71,7 +73,7 @@ autoplay = "spin"
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 0
-collision_mask = 4
+collision_mask = 20
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_hj4kt")
@@ -86,4 +88,8 @@ scale = Vector2(0.9, 0.9)
 stream = ExtResource("4_xcf3a")
 pitch_scale = 1.4
 
+[node name="DespawnTimer" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
+[connection signal="timeout" from="DespawnTimer" to="." method="_on_despawn_timer_timeout"]
