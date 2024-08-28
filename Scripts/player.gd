@@ -6,6 +6,7 @@ class_name Player
 signal coin_collected
 signal fell_to_player_death
 signal got_hit
+signal checkpoint_hit
 
 @onready var sprite_2d = $Sprite2D
 @onready var camera_2d = $Camera2D
@@ -254,6 +255,11 @@ func _on_body_area_2d_area_entered(area):
 	
 	if enemy_determiner.is_enemy(area.get_parent()) && (area.get_parent() is Sunflower):
 		take_damage()
+		
+	if area.get_parent() is Checkpoint:
+		print("Checkpoint!")
+		area.get_parent().die()
+		checkpoint_hit.emit()
 	
 func _on_body_area_2d_body_entered(body):
 	if is_dead:

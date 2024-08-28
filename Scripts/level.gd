@@ -20,7 +20,7 @@ var game_over_camera
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	player.position = start_position.position
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -60,6 +60,7 @@ func connect_player_signals():
 	player.coin_collected.connect(_on_player_coin_collected)
 	player.fell_to_player_death.connect(_on_player_fell_to_player_death)
 	player.got_hit.connect(_on_player_got_hit)
+	player.checkpoint_hit.connect(_on_player_checkpoint_hit)
 
 func get_player_health():
 	return player.get_health()
@@ -72,3 +73,6 @@ func get_player_position():
 		return player.position
 	else:
 		return game_over_camera.position
+
+func _on_player_checkpoint_hit() -> void:
+	start_position.position = player.position
