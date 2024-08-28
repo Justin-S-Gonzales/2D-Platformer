@@ -24,7 +24,7 @@ func play_animation():
 		for body in up_area.get_overlapping_bodies():
 			if enemy_determiner.is_enemy(body):
 				body.die()
-			if body is SwordPickup:
+			if body is SwordPickup || body is BoomerangPickup:
 				(body as RigidBody2D).apply_impulse(powerup_bonk)
 	
 	if content.get_content_amount() <= 0:
@@ -41,7 +41,7 @@ func play_animation():
 	if content.get_content() is Coin:
 		content.get_content().play_animation()
 		
-	if content.get_content() is SwordPickup:
+	if content.get_content() is SwordPickup || content.get_content() is BoomerangPickup:
 		powerup_spawn_sound.play()
 		
 	content.reduce_content_amount()	

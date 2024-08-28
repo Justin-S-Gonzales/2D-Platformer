@@ -109,7 +109,6 @@ var current_boomerang: Boomerang = null
 
 func _ready():
 	material.set_shader_parameter("flash_value", 0)
-	has_powerup = 2
 
 func _physics_process(delta):	
 	# Check for death from fall
@@ -270,7 +269,7 @@ func _on_body_area_2d_body_entered(body):
 			body.collision_shape_2d.set_deferred("disabled", true)
 	
 	# Powerups
-	if body is SwordPickup:
+	if body is SwordPickup || body is BoomerangPickup:
 		powerup_pickup_sound.play()
 		body.queue_free()
 		
@@ -280,10 +279,15 @@ func _on_body_area_2d_body_entered(body):
 		shader_animation_player.play(&"hit_flash")
 		set_invulnerability_false_timer.start()
 		
-		has_powerup = 1
+		if body is SwordPickup:
+			has_powerup = 1
+		elif body is BoomerangPickup:
+			has_powerup = 2
+		
 		health.set_health(2)
 		
 		got_hit.emit()
+		
 		
 func _on_downward_area_2d_body_entered(body):
 	if is_dead:

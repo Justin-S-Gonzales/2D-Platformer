@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://csqfprig8ikim"]
+
+[ext_resource type="PackedScene" uid="uid://bpcsd2m6ree7n" path="res://Scenes/block.tscn" id="1_cg6qm"]
+[ext_resource type="PackedScene" uid="uid://3arn8dnr7lny" path="res://Scenes/boomerang_pickup.tscn" id="2_sd7pj"]
+
+[node name="Sword Pickup Block" type="Node2D"]
+
+[node name="Block" parent="." instance=ExtResource("1_cg6qm")]
+content_scene = ExtResource("2_sd7pj")
