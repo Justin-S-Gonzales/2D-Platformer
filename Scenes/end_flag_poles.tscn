@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://dxauto8ueo83y"]
+
+[ext_resource type="Script" path="res://Scripts/end_flag_poles.gd" id="1_77jvk"]
+[ext_resource type="Texture2D" uid="uid://c3hy1537deuxl" path="res://Sprites/level_end_flag_point.png" id="1_nkus2"]
+[ext_resource type="PackedScene" uid="uid://vulu7lwe7ohg" path="res://Scenes/end_flag.tscn" id="2_qyn4g"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g3uf2"]
+size = Vector2(26, 2)
+
+[node name="End Flag Poles" type="StaticBody2D"]
+script = ExtResource("1_77jvk")
+flag_speed = 50.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 63)
+shape = SubResource("RectangleShape2D_g3uf2")
+disabled = true
+
+[node name="Left pole" type="Sprite2D" parent="."]
+position = Vector2(-5, 0)
+scale = Vector2(1.625, 2)
+texture = ExtResource("1_nkus2")
+hframes = 2
+
+[node name="Right pole" type="Sprite2D" parent="."]
+z_index = 6
+position = Vector2(5, 0)
+scale = Vector2(1.625, 2)
+texture = ExtResource("1_nkus2")
+hframes = 2
+frame = 1
+
+[node name="End Flag" parent="." instance=ExtResource("2_qyn4g")]
+
+[node name="Top" type="Marker2D" parent="."]
+position = Vector2(0, -44)
+
+[node name="Bottom" type="Marker2D" parent="."]
+position = Vector2(0, 56)
+
+[connection signal="broken" from="End Flag" to="." method="_on_end_flag_broken"]

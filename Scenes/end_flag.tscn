@@ -1,0 +1,69 @@
+[gd_scene load_steps=7 format=3 uid="uid://vulu7lwe7ohg"]
+
+[ext_resource type="Script" path="res://Scripts/end_flag.gd" id="1_8p1by"]
+[ext_resource type="Texture2D" uid="uid://d1pl6fx5el7cm" path="res://Sprites/end_level_flag_sheet.png" id="1_je7p1"]
+
+[sub_resource type="Animation" id="Animation_vp533"]
+resource_name = "idle"
+length = 1.4
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+}
+
+[sub_resource type="Animation" id="Animation_xhmw6"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_l7gb0"]
+_data = {
+"RESET": SubResource("Animation_xhmw6"),
+"idle": SubResource("Animation_vp533")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nadgd"]
+size = Vector2(24, 8)
+
+[node name="End Flag" type="Node2D"]
+script = ExtResource("1_8p1by")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_je7p1")
+hframes = 14
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_l7gb0")
+}
+autoplay = "idle"
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_nadgd")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
