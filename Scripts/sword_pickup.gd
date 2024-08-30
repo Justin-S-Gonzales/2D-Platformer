@@ -6,7 +6,6 @@ class_name SwordPickup
 func _ready():
 	pass # Replace with function body.
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
+func _process(delta: float) -> void:
+	if position.y > 80.0:
+		queue_free()

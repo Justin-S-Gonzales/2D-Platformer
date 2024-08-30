@@ -2,8 +2,9 @@ extends CharacterBody2D
 
 class_name Watermelon
 
-@onready var left_ray_cast = $LeftRayCast
-@onready var right_ray_cast = $RightRayCast
+@onready var left_ray_cast: RayCast2D = $LeftRayCast
+@onready var right_ray_cast: RayCast2D = $RightRayCast
+
 @onready var animation_player = $AnimationPlayer
 @onready var up_ray_cast = $UpRayCast
 
@@ -24,12 +25,13 @@ func _physics_process(delta):
 	# Add the gravity.
 	if not is_on_floor():
 		velocity.y += gravity * delta
-		
-	if left_ray_cast.is_colliding() && !(left_ray_cast.get_collider() is Player):
+	
+	#  && !(bounce_area_l.get_overlapping_bodies()[0] is Player)	
+	if left_ray_cast.is_colliding() && left_ray_cast.get_collider() is not Player:
 		direction = 1
 		animation_player.speed_scale = 1
 		animation_player.advance(0.4)
-	elif right_ray_cast.is_colliding() && !(right_ray_cast.get_collider() is Player):
+	if right_ray_cast.is_colliding() && right_ray_cast.get_collider() is not Player:
 		direction = -1
 		animation_player.speed_scale = -1
 		animation_player.advance(0.4)

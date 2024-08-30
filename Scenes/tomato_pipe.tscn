@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://dkk7ugnhc0jcm"]
+
+[ext_resource type="PackedScene" uid="uid://bnu6t36q1kam5" path="res://Scenes/pipe.tscn" id="1_0amem"]
+[ext_resource type="PackedScene" uid="uid://ddlxr0mbji4rf" path="res://Scenes/tomato.tscn" id="2_qw6hv"]
+
+[sub_resource type="Curve2D" id="Curve2D_fqeb3"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -20)
+}
+point_count = 2
+
+[node name="TomatoPipe" type="Node2D"]
+
+[node name="Pipe" parent="." instance=ExtResource("1_0amem")]
+spawn_scene = ExtResource("2_qw6hv")
+
+[node name="EnemyEndPoint" parent="Pipe" index="1"]
+position = Vector2(0, -20)
+
+[node name="Path2D" parent="Pipe" index="4"]
+scale = Vector2(1, 1)
+curve = SubResource("Curve2D_fqeb3")
+
+[editable path="Pipe"]

@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://cjjdebjacad4t"]
+
+[ext_resource type="PackedScene" uid="uid://bnu6t36q1kam5" path="res://Scenes/pipe.tscn" id="1_xfjqq"]
+[ext_resource type="PackedScene" uid="uid://b7b0sq3hp815q" path="res://Scenes/watermelon.tscn" id="2_fv0uh"]
+
+[node name="WatermelonPipe" type="Node2D"]
+position = Vector2(8, 2)
+
+[node name="Pipe" parent="." instance=ExtResource("1_xfjqq")]
+rotation = -1.5708
+spawn_scene = ExtResource("2_fv0uh")
+
+[node name="EnemyEndPoint" parent="Pipe" index="1"]
+position = Vector2(-26, -1.1365e-06)
+
+[node name="Path2D" parent="Pipe" index="4"]
+scale = Vector2(1, 1)
+
+[editable path="Pipe"]
