@@ -26,6 +26,7 @@ position = Vector2(0, -15)
 
 [node name="SpawnTimer" type="Timer" parent="."]
 wait_time = 3.0
+autostart = true
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
 position = Vector2(4.76837e-07, 2)

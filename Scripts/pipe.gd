@@ -36,10 +36,12 @@ func _physics_process(delta: float) -> void:
 			watermelon.position.y -= 8
 
 func _on_visible_on_screen_notifier_2d_screen_entered() -> void:
-	spawn_timer.start()
+	# spawn_timer.start()
+	pass
 
 func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
-	spawn_timer.stop()
+	# spawn_timer.stop()
+	pass
 
 func _on_spawn_timer_timeout() -> void:
 	if !is_traveling_up:

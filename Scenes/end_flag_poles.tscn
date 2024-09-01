@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://dxauto8ueo83y"]
+[gd_scene load_steps=6 format=3 uid="uid://dxauto8ueo83y"]
 
 [ext_resource type="Script" path="res://Scripts/end_flag_poles.gd" id="1_77jvk"]
 [ext_resource type="Texture2D" uid="uid://c3hy1537deuxl" path="res://Sprites/level_end_flag_point.png" id="1_nkus2"]
@@ -7,7 +7,11 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g3uf2"]
 size = Vector2(26, 2)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s3t53"]
+size = Vector2(11, 178)
+
 [node name="End Flag Poles" type="StaticBody2D"]
+position = Vector2(0, -56)
 script = ExtResource("1_77jvk")
 flag_speed = 50.0
 
@@ -38,4 +42,19 @@ position = Vector2(0, -44)
 [node name="Bottom" type="Marker2D" parent="."]
 position = Vector2(0, 56)
 
+[node name="RewardThreshhold" type="Marker2D" parent="."]
+position = Vector2(0, -13)
+
+[node name="RewardSpawnPoint" type="Marker2D" parent="."]
+position = Vector2(110, 57)
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(18, -26)
+shape = SubResource("RectangleShape2D_s3t53")
+
 [connection signal="broken" from="End Flag" to="." method="_on_end_flag_broken"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

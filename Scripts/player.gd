@@ -67,6 +67,7 @@ var jumpBufferCounter = 0
 # Timers
 @onready var set_invulnerability_false_timer = $SetInvulnerabilityFalseTimer
 @onready var replenish_boomerangs_timer: Timer = $ReplenishBoomerangsTimer
+@onready var spawn_end_level_camera_timer: Timer = $SpawnEndLevelCameraTimer
 
 # Animation
 enum AnimationState {
@@ -89,6 +90,7 @@ var is_dead = false
 var is_invulnerable: bool = false
 var has_powerup: int = 0
 var current_attack: int = 0
+var freeze_controls: bool = false
 
 # Gravity
 @export var full_gravity = 2000.0
@@ -108,8 +110,12 @@ var boomerang_scene: PackedScene = preload("res://Scenes/boomerang.tscn")
 var boomerang_count: int = 3
 var current_boomerang: Boomerang = null
 
+# End level
+var end_level_camera: Camera2D = null
+
 func _ready():
 	material.set_shader_parameter("flash_value", 0)
+	# has_powerup = 1
 
 func _physics_process(delta):	
 	# Check for death from fall
@@ -123,11 +129,18 @@ func _physics_process(delta):
 		move_and_slide()
 		return
 	
+	if freeze_controls:
+		Input.action_release(&"move_left")
+		Input.action_release(&"run")
+		Input.action_release(&"jump")
+		Input.action_release(&"attack")
+		Input.action_press(&"move_right")
+	
 	# Get the input direction
 	direction = Input.get_axis("move_left", "move_right")
 	
 	# Jump buffer
-	if Input.is_action_just_pressed(&"jump"):
+	if !freeze_controls && Input.is_action_just_pressed(&"jump"):
 		jumpBufferCounter = jumpBufferTime
 	else:
 		jumpBufferCounter -= delta		
@@ -175,7 +188,7 @@ func _physics_process(delta):
 	attack_sprite.flip_h  = facing_direction < 0
 	
 	# Powerup moves
-	if has_powerup == 1 && (Input.is_action_just_pressed(&"attack") || current_animation_state == AnimationState.Attacking):
+	if !freeze_controls && has_powerup == 1 && (Input.is_action_just_pressed(&"attack") || current_animation_state == AnimationState.Attacking):
 			current_animation_state = AnimationState.Attacking
 			
 			if Input.is_action_just_pressed(&"attack") && is_on_floor():
@@ -184,7 +197,7 @@ func _physics_process(delta):
 			elif Input.is_action_just_pressed(&"attack") && !is_on_floor():
 				animation_player.play(&"sword_air_attack")
 				current_attack = 2
-	elif has_powerup == 2 && (Input.is_action_just_pressed(&"attack") || current_animation_state == AnimationState.Attacking):
+	elif !freeze_controls && has_powerup == 2 && (Input.is_action_just_pressed(&"attack") || current_animation_state == AnimationState.Attacking):
 		if boomerang_count > 0:
 			current_animation_state = AnimationState.Attacking
 			current_attack = 3
@@ -469,3 +482,13 @@ func spawn_boomerang():
 
 func _on_replenish_boomerangs_timer_timeout() -> void:
 	boomerang_count = 3
+
+func set_freeze_controls(freeze_contr: bool):
+	freeze_controls = freeze_contr
+	spawn_end_level_camera_timer.start()
+
+func _on_spawn_end_level_camera_timer_timeout() -> void:
+	end_level_camera = camera_2d.duplicate()
+	get_parent().add_child(end_level_camera)
+	end_level_camera.position = position
+	end_level_camera.make_current()

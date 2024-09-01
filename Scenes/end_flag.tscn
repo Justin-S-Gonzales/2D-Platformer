@@ -1,17 +1,30 @@
-[gd_scene load_steps=7 format=3 uid="uid://vulu7lwe7ohg"]
+[gd_scene load_steps=9 format=3 uid="uid://vulu7lwe7ohg"]
 
 [ext_resource type="Script" path="res://Scripts/end_flag.gd" id="1_8p1by"]
 [ext_resource type="Texture2D" uid="uid://d1pl6fx5el7cm" path="res://Sprites/end_level_flag_sheet.png" id="1_je7p1"]
+[ext_resource type="Texture2D" uid="uid://dm5280you2h6v" path="res://Sprites/end_flag_rip_sheet.png" id="3_fn3co"]
 
 [sub_resource type="Animation" id="Animation_xhmw6"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/path = NodePath("IdleSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("RipSprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -26,7 +39,7 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/path = NodePath("IdleSprite:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -36,10 +49,55 @@ tracks/0/keys = {
 "values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 }
 
+[sub_resource type="Animation" id="Animation_djxxg"]
+resource_name = "rip"
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("RipSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("RipSprite")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"show"
+}]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("IdleSprite")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"hide"
+}]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_l7gb0"]
 _data = {
 "RESET": SubResource("Animation_xhmw6"),
-"idle": SubResource("Animation_vp533")
+"idle": SubResource("Animation_vp533"),
+"rip": SubResource("Animation_djxxg")
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nadgd"]
@@ -48,7 +106,8 @@ size = Vector2(24, 8)
 [node name="End Flag" type="Node2D"]
 script = ExtResource("1_8p1by")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="IdleSprite" type="Sprite2D" parent="."]
+position = Vector2(0, 1)
 texture = ExtResource("1_je7p1")
 hframes = 14
 
@@ -63,7 +122,13 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(0, -1)
+visible = false
 shape = SubResource("RectangleShape2D_nadgd")
+
+[node name="RipSprite" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(0, 9)
+texture = ExtResource("3_fn3co")
+hframes = 7
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

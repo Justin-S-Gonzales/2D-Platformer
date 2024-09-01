@@ -503,6 +503,10 @@ position = Vector2(-22, 0)
 wait_time = 3.0
 one_shot = true
 
+[node name="SpawnEndLevelCameraTimer" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true
+
 [connection signal="area_entered" from="BodyArea2D" to="." method="_on_body_area_2d_area_entered"]
 [connection signal="body_entered" from="BodyArea2D" to="." method="_on_body_area_2d_body_entered"]
 [connection signal="area_entered" from="DownwardArea2D" to="." method="_on_downward_area_2d_area_entered"]
@@ -510,3 +514,4 @@ one_shot = true
 [connection signal="body_entered" from="UpwardArea2D" to="." method="_on_upward_area_2d_body_entered"]
 [connection signal="timeout" from="SetInvulnerabilityFalseTimer" to="." method="_on_set_invulnerability_false_timer_timeout"]
 [connection signal="timeout" from="ReplenishBoomerangsTimer" to="." method="_on_replenish_boomerangs_timer_timeout"]
+[connection signal="timeout" from="SpawnEndLevelCameraTimer" to="." method="_on_spawn_end_level_camera_timer_timeout"]
