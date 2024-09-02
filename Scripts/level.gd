@@ -6,6 +6,7 @@ signal coin_collected
 signal player_died
 signal player_got_hit
 signal player_respawned
+signal level_end_reached
 
 @onready var start_position = $"Start Position"
 @onready var player = $Player
@@ -76,3 +77,10 @@ func get_player_position():
 
 func _on_player_checkpoint_hit() -> void:
 	start_position.position = player.position
+
+func _on_load_next_level_area_body_entered(body: Node2D) -> void:
+	if body is Player:
+		level_end_reached.emit()
+
+func set_player_freeze_controls(freeze_contr: bool) -> void:
+	player.set_freeze_controls(freeze_contr)

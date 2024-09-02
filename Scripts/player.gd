@@ -485,6 +485,11 @@ func _on_replenish_boomerangs_timer_timeout() -> void:
 
 func set_freeze_controls(freeze_contr: bool):
 	freeze_controls = freeze_contr
+	
+	if freeze_contr == false:
+		Input.action_release(&"move_right")
+	
+func start_spawn_end_level_camera_timer():
 	spawn_end_level_camera_timer.start()
 
 func _on_spawn_end_level_camera_timer_timeout() -> void:

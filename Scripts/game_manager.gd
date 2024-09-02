@@ -1,20 +1,27 @@
 extends Node
 
 @onready var hud = $HUD
-@onready var level_1 = $Level1
 @onready var audio_stream_player_2d = $AudioStreamPlayer2D
+@onready var start_next_level_timer: Timer = $StartNextLevelTimer
 
-var coins = 0
-var one_up_coins_count = 100
-@export var lives = 3
+var test_level_scene: PackedScene = preload("res://Scenes/level.tscn")
+var level1_scene: PackedScene = preload("res://Scenes/level1.tscn")
+var current_level: Level = null
+var current_level_index: int = 0
+
+var coins: int = 0
+var one_up_coins_count: int = 100
+@export var lives: int = 3
 
 func _ready():
 	hud.set_lives(lives)
 	
-	hud.set_health(level_1.get_player_health())
+	setup_level(test_level_scene)
+	
+	hud.set_health(current_level.get_player_health())
 
 func _process(delta):
-	audio_stream_player_2d.position = level_1.get_player_position()
+	audio_stream_player_2d.position = current_level.get_player_position()
 
 func _on_level_coin_collected():
 	coins += 1
@@ -24,18 +31,44 @@ func _on_level_coin_collected():
 		hud.set_lives(lives)
 	hud.set_coins(coins)
 
-func _on_level_1_player_died():
+func _on_level_player_died():
 	lives -= 1
 	if lives < 0:
 		hud.show_game_over()
-		level_1.game_over()
-		level_1.respawn_player = false
-		level_1.is_game_over = true
+		current_level.game_over()
+		current_level.respawn_player = false
+		current_level.is_game_over = true
 	else:
 		hud.set_lives(lives)
 
-func _on_level_1_player_got_hit():
-	hud.set_health(level_1.get_player_health())
+func update_hud():
+	hud.set_health(current_level.get_player_health())
 
-func _on_level_1_player_respawned():
-	hud.set_health(level_1.get_player_health())
+func load_next_level():
+	current_level_index += 1
+	start_next_level_timer.start()
+		
+func setup_level(level_scene: PackedScene):
+	if current_level != null:
+		current_level.queue_free()
+	
+	current_level = level_scene.instantiate()
+	if current_level == null:
+		print(&"error loading level")
+		return 
+		
+	add_child(current_level)
+	setup_level_connections()
+	
+	current_level.set_player_freeze_controls(false)
+
+func setup_level_connections():
+	current_level.coin_collected.connect(_on_level_coin_collected)
+	current_level.player_died.connect(_on_level_player_died)
+	current_level.player_got_hit.connect(update_hud)
+	current_level.player_respawned.connect(update_hud)
+	current_level.level_end_reached.connect(load_next_level)
+
+func _on_start_next_level_timer_timeout() -> void:
+	if current_level_index == 1:
+		setup_level(level1_scene)
