@@ -61,6 +61,8 @@ func setup_level(level_scene: PackedScene):
 	setup_level_connections()
 	
 	current_level.set_player_freeze_controls(false)
+	
+	audio_stream_player_2d.seek(0.0)
 
 func setup_level_connections():
 	current_level.coin_collected.connect(_on_level_coin_collected)

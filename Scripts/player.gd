@@ -85,12 +85,12 @@ var shader_hit_flash_color: Color = Color(1.0, 0.0, 0.0, 1.0);
 var shader_powerup_flash_color: Color = Color(1, 1, 1, 0.48627451062202)
 
 # Flags
+@export var freeze_controls: bool = false
 var facing_direction = 1
 var is_dead = false
 var is_invulnerable: bool = false
 var has_powerup: int = 0
 var current_attack: int = 0
-var freeze_controls: bool = false
 
 # Gravity
 @export var full_gravity = 2000.0
